@@ -55,12 +55,12 @@ MIDDLEWARE = [
 ]
 
 REST_FRAMEWORK = {
-    # 'DEFAULT_AUTHENTICATION_CLASSES': (
-    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
-    # ),
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
     "USER_DETAILS_SERIALIZER": "users.serializers.UserDetailsSerializer"
 }
 
@@ -139,6 +139,10 @@ STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+REST_USE_JWT = True
+JWT_AUTH_COOKIE = 'images-api-auth'
+JWT_AUTH_REFRESH_COOKIE = 'images-api-refresh-auth'
 
 AUTH_USER_MODEL = "users.User"
 ACCOUNT_EMAIL_REQUIRED = False
