@@ -2,8 +2,13 @@ from django.db import models
 from users.models import User
 
 
+def upload_to(instance, filename):
+    return f'images/{filename}'
+
+
 class Image(models.Model):
     name = models.CharField(max_length=250, blank=True, null=True)
+    image = models.ImageField(upload_to=upload_to, default='images/default.jpg')
     original_image_link = models.CharField(max_length=2500)
     thumbnails_links = models.JSONField(blank=True, null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="images")

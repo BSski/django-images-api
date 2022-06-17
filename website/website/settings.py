@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -63,7 +63,6 @@ REST_FRAMEWORK = {
     ),
     "USER_DETAILS_SERIALIZER": "users.serializers.UserDetailsSerializer"
 }
-
 
 ROOT_URLCONF = "website.urls"
 
@@ -146,3 +145,7 @@ JWT_AUTH_REFRESH_COOKIE = 'images-api-refresh-auth'
 
 AUTH_USER_MODEL = "users.User"
 ACCOUNT_EMAIL_REQUIRED = False
+
+
+MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+MEDIA_URL = '/media/'

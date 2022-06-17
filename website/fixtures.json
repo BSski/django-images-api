@@ -3,24 +3,24 @@
         "pk": 1,
         "model": "users.UserTier",
         "fields": {
-            "name": "Supressed",
-            "thumbnails_sizes": {
-                "sizes": []
-            },
-            "can_use_original_image_link": 0,
-            "can_fetch_expiring_link": 0
-        }
-    },
-    {
-        "pk": 2,
-        "model": "users.UserTier",
-        "fields": {
             "name": "Admin",
             "thumbnails_sizes": {
                 "sizes": [200, 400, 600, 800, 1000]
             },
             "can_use_original_image_link": 1,
             "can_fetch_expiring_link": 1
+        }
+    },
+    {
+        "pk": 2,
+        "model": "users.UserTier",
+        "fields": {
+            "name": "Supressed",
+            "thumbnails_sizes": {
+                "sizes": []
+            },
+            "can_use_original_image_link": 0,
+            "can_fetch_expiring_link": 0
         }
     },
     {

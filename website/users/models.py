@@ -31,27 +31,20 @@ class UserTier(models.Model):
 
         if settings_changed:
             for user in self.users.all():
-                print("\n\n Aktualizuje hash usera:", user, "\n\n")
                 user.save()
 
 
+
+
+
 class UserManager(BaseUserManager):
-    def _create_user(
-        self,
-        username,
-        email,
-        password,
-        is_active,
-        is_staff,
-        is_superuser,
-        **extra_fields
-    ):
-        if not username:
+    def _create_user(self, username, email, password, is_active, is_staff, is_superuser, **extra_fields):
+        if not email:
             raise ValueError("The given username is not valid.")
         email = self.normalize_email(email)
         user = self.model(
             username=username,
-            email=email,
+            email=self.normalize_email(email),
             is_active=is_active,
             is_staff=is_staff,
             is_superuser=is_superuser,
@@ -63,6 +56,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_user(self, username, email, password, **extra_fields):
+        """Creates and saves a User with the given email and password."""
         return self._create_user(
             username,
             email,
@@ -74,7 +68,8 @@ class UserManager(BaseUserManager):
         )
 
     def create_superuser(self, username, email, password, **extra_fields):
-        user = self._create_user(
+        """Creates and saves a superuser with the given email and password."""
+        return self._create_user(
             username,
             email,
             password,
@@ -83,8 +78,7 @@ class UserManager(BaseUserManager):
             is_superuser=True,
             **extra_fields
         )
-        user.save(using=self._db)
-        return user
+
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -101,17 +95,20 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_superuser = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now())
     receive_newsletter = models.BooleanField(default=False)
-    birth_date = models.DateTimeField(blank=True, null=True)
+    birth_date = models.DateField(blank=True, null=True)
     address = models.CharField(max_length=300, blank=True, null=True)
     city = models.CharField(max_length=100, blank=True, null=True)
     about_me = models.TextField(max_length=100, blank=True, null=True)
 
     objects = UserManager()
 
-    USERNAME_FIELD = "username"
+    USERNAME_FIELD = "email"
     REQUIRED_FIELDS = [
-        "email",
+        "username"
     ]
+
+    def __str__(self):
+        return self.email
 
     def _update_images(self):
         for image in self.images.all():
