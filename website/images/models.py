@@ -4,6 +4,7 @@ from PIL import Image as Img
 from django.core.validators import MinLengthValidator
 from .validators import FileValidator
 
+
 def upload_to(instance, filename):
     return f'images/{filename}'
 
@@ -57,7 +58,7 @@ class Image(models.Model):
         """
         new_height = 100
         img.thumbnail((new_height, int(width * (new_height / height))))
-        img.save(f'media/images/{self.owner}_{self.name}_{new_height}.jpg')
+        img.save(f'media/images/{self.owner}_{self.name}_{new_height}.png')
 
 
 
