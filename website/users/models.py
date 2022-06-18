@@ -108,7 +108,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     ]
 
     def __str__(self):
-        return self.email
+        return self.username
 
     def _update_images(self):
         for image in self.images.all():

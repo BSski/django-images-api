@@ -1,5 +1,7 @@
 from django.db import models
 from users.models import User
+from PIL import Image as Img
+from django.core.validators import MinLengthValidator
 
 
 def upload_to(instance, filename):
@@ -7,8 +9,16 @@ def upload_to(instance, filename):
 
 
 class Image(models.Model):
-    name = models.CharField(max_length=250, blank=True, null=True)
-    image = models.ImageField(upload_to=upload_to, default='images/default.jpg')
+    name = models.CharField(
+        validators=[
+            MinLengthValidator(4, 'The field must contain at least 4 characters')
+        ],
+        max_length=255, blank=True, null=True, unique=True
+    )
+
+
+
+    image = models.ImageField(upload_to=upload_to)
     original_image_link = models.CharField(max_length=2500)
     thumbnails_links = models.JSONField(blank=True, null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="images")
@@ -34,3 +44,18 @@ class Image(models.Model):
 
         self.thumbnails_links = new_thumbnails_links
         self.save()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        img = Img.open(self.image.url.lstrip('/'))
+        width, height = img.size
+        """for new_height in user's_user_tier_allowed_sizes:
+            img.thumbnail((calculated sizes))
+            img.save(f'media/images/{self.owner}_{self.name}_{new_height}.jpg')
+        """
+        new_height = 100
+        img.thumbnail((new_height, int(width * (new_height / height))))
+        img.save(f'media/images/{self.owner}_{self.name}_{new_height}.jpg')
+
+
+
