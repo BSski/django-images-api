@@ -2,7 +2,7 @@ from django.db import models
 from users.models import User
 from PIL import Image as Img
 from django.core.validators import MinLengthValidator
-
+from .validators import FileValidator
 
 def upload_to(instance, filename):
     return f'images/{filename}'
@@ -15,10 +15,12 @@ class Image(models.Model):
         ],
         max_length=255, blank=True, null=True, unique=True
     )
+    validate_image = FileValidator(
+        max_size=1920 * 1080,
+        content_types=('image/jpeg', 'image/png')
+    )
+    image = models.ImageField(upload_to=upload_to, validators=[validate_image])
 
-
-
-    image = models.ImageField(upload_to=upload_to)
     original_image_link = models.CharField(max_length=2500)
     thumbnails_links = models.JSONField(blank=True, null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="images")
