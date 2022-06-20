@@ -48,17 +48,17 @@ class Image(models.Model):
         self.thumbnails_links = new_thumbnails_links
         self.save()
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        img = Img.open(self.image.url.lstrip('/'))
-        width, height = img.size
-        """for new_height in user's_user_tier_allowed_sizes:
-            img.thumbnail((calculated sizes))
-            img.save(f'media/images/{self.owner}_{self.name}_{new_height}.jpg')
-        """
-        new_height = 100
-        img.thumbnail((new_height, int(width * (new_height / height))))
-        img.save(f'media/images/{self.owner}_{self.name}_{new_height}.png')
+    # def save(self, *args, **kwargs):
+    #     super().save(*args, **kwargs)
+    #     img = Img.open(self.image.url.lstrip('/'))
+    #     width, height = img.size
+    #     """for new_height in user's_user_tier_allowed_sizes:
+    #         img.thumbnail((calculated sizes))
+    #         img.save(f'media/images/{self.owner}_{self.name}_{new_height}.jpg')
+    #     """
+    #     new_height = 100
+    #     img.thumbnail((new_height, int(width * (new_height / height))))
+    #     img.save(f'media/images/{self.owner}_{self.name}_{new_height}.png')
 
 
 

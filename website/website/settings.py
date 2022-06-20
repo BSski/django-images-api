@@ -12,20 +12,34 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 
+import django_on_heroku
+from dotenv import load_dotenv
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+# Load environmental variables from .env file.
+dotenv_file = os.path.join(BASE_DIR, "../.env")
+if os.path.isfile(dotenv_file):
+    load_dotenv(dotenv_file)
 
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-i)-gz(1m0aey!^subu^kror!e$o##83-+@7)3uv%y3i=ut95(d"
+SECRET_KEY = os.environ.get("SECRET_KEY")
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(os.environ.get("DEBUG", False))
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+]
 
 
 # Application definition
@@ -37,15 +51,20 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "corsheaders",
     "rest_framework",
     "rest_framework.authtoken",
     "dj_rest_auth",
     "users",
     "images",
+    "storages",
+    'django_cleanup.apps.CleanupConfig',
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -134,18 +153,62 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+
+#CSRF_TRUSTED_ORIGINS = ["https://bsski-images-api.herokuapp.com"]
+
+
+# Security headers configuration
+CSRF_COOKIE_SECURE = int(os.environ.get("CSRF_COOKIE_SECURE", True))
+SESSION_COOKIE_SECURE = int(os.environ.get("SESSION_COOKIE_SECURE", True))
+
+
+# Heroku configuration
+django_on_heroku.settings(locals(), test_runner=False)
+
+if "OPTIONS" in DATABASES["default"]:
+    del DATABASES["default"]["OPTIONS"]["sslmode"]
+
+
+# SemaphoreCI configuration
+if "CI" in os.environ:
+    DATABASES["default"]["TEST"] = {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": "test.db",
+    }
+
+
+# JWT configuration
 REST_USE_JWT = True
 JWT_AUTH_COOKIE = 'images-api-auth'
 JWT_AUTH_REFRESH_COOKIE = 'images-api-refresh-auth'
 
+
+# Custom user model configuration
 AUTH_USER_MODEL = "users.User"
 ACCOUNT_EMAIL_REQUIRED = False
 
 
+# Media configuration
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 MEDIA_URL = '/media/'
+
+
+# AWS configuration
+AWS_S3_REGION_NAME = os.environ.get("AWS_S3_REGION_NAME")
+AWS_S3_ADDRESSING_STYLE = os.environ.get("AWS_S3_ADDRESSING_STYLE")
+AWS_S3_SIGNATURE_VERSION = os.environ.get("AWS_S3_SIGNATURE_VERSION")
+AWS_ACCESS_KEY_ID = os.environ.get("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.environ.get("AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = os.environ.get("AWS_STORAGE_BUCKET_NAME")
+DEFAULT_FILE_STORAGE = os.environ.get("DEFAULT_FILE_STORAGE")
+AWS_S3_FILE_OVERWRITE = False
