@@ -7,7 +7,7 @@ from rest_framework import viewsets
 
 @api_view()
 def home(request):
-    return Response({'message': 'Welcome!'})
+    return Response({"message": "Welcome!"})
 
 
 class UserViewSet(viewsets.ModelViewSet):

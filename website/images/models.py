@@ -6,19 +6,21 @@ from .validators import FileValidator
 
 
 def upload_to(instance, filename):
-    return f'images/{filename}'
+    return f"images/{filename}"
 
 
 class Image(models.Model):
     name = models.CharField(
         validators=[
-            MinLengthValidator(4, 'The field must contain at least 4 characters')
+            MinLengthValidator(4, "The field must contain at least 4 characters")
         ],
-        max_length=255, blank=True, null=True, unique=True
+        max_length=255,
+        blank=True,
+        null=True,
+        unique=True,
     )
     validate_image = FileValidator(
-        max_size=1920 * 1080,
-        content_types=('image/jpeg', 'image/png')
+        max_size=1920 * 1080, content_types=("image/jpeg", "image/png")
     )
     image = models.ImageField(upload_to=upload_to, validators=[validate_image])
 
@@ -59,6 +61,3 @@ class Image(models.Model):
     #     new_height = 100
     #     img.thumbnail((new_height, int(width * (new_height / height))))
     #     img.save(f'media/images/{self.owner}_{self.name}_{new_height}.png')
-
-
-

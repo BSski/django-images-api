@@ -8,5 +8,5 @@ router.register("images", ImageViewSet, basename="images")
 
 
 urlpatterns = [
-    url('', include(router.urls)),
+    url("", include(router.urls)),
 ]

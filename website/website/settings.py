@@ -58,7 +58,7 @@ INSTALLED_APPS = [
     "users",
     "images",
     "storages",
-    'django_cleanup.apps.CleanupConfig',
+    "django_cleanup.apps.CleanupConfig",
 ]
 
 MIDDLEWARE = [
@@ -74,13 +74,11 @@ MIDDLEWARE = [
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'dj_rest_auth.jwt_auth.JWTCookieAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
     ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-    "USER_DETAILS_SERIALIZER": "users.serializers.UserDetailsSerializer"
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "USER_DETAILS_SERIALIZER": "users.serializers.UserDetailsSerializer",
 }
 
 ROOT_URLCONF = "website.urls"
@@ -164,7 +162,7 @@ STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-#CSRF_TRUSTED_ORIGINS = ["https://bsski-images-api.herokuapp.com"]
+# CSRF_TRUSTED_ORIGINS = ["https://bsski-images-api.herokuapp.com"]
 
 
 # Security headers configuration
@@ -189,8 +187,8 @@ if "CI" in os.environ:
 
 # JWT configuration
 REST_USE_JWT = True
-JWT_AUTH_COOKIE = 'images-api-auth'
-JWT_AUTH_REFRESH_COOKIE = 'images-api-refresh-auth'
+JWT_AUTH_COOKIE = "images-api-auth"
+JWT_AUTH_REFRESH_COOKIE = "images-api-refresh-auth"
 
 
 # Custom user model configuration
@@ -200,7 +198,7 @@ ACCOUNT_EMAIL_REQUIRED = False
 
 # Media configuration
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-MEDIA_URL = '/media/'
+MEDIA_URL = "/media/"
 
 
 # AWS configuration

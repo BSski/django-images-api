@@ -3,25 +3,28 @@ from .models import Image
 from django import forms
 
 
-#admin.site.register(Image)
+# admin.site.register(Image)
 
 
 # forms.py
+
 
 class CustomImageForm(forms.ModelForm):
     class Meta:
         model = Image
         fields = [
-            'name',
-            'image',
-            'owner',
+            "name",
+            "image",
+            "owner",
         ]
         widgets = {
-            'a': forms.TextInput(),
+            "a": forms.TextInput(),
         }
 
+
 # admin.py
-#from app.forms import CustomImageForm
+# from app.forms import CustomImageForm
+
 
 @admin.register(Image)
 class ImagesAdmin(admin.ModelAdmin):

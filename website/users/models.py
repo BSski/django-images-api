@@ -13,7 +13,7 @@ class UserTier(models.Model):
     settings_hash = models.CharField(max_length=20, blank=True, null=True)
 
     def __str__(self):
-        return f'{self.id}. {self.name}'
+        return f"{self.id}. {self.name}"
 
     def save(self, *args, **kwargs):
         hashids = Hashids()
@@ -34,11 +34,17 @@ class UserTier(models.Model):
                 user.save()
 
 
-
-
-
 class UserManager(BaseUserManager):
-    def _create_user(self, username, email, password, is_active, is_staff, is_superuser, **extra_fields):
+    def _create_user(
+        self,
+        username,
+        email,
+        password,
+        is_active,
+        is_staff,
+        is_superuser,
+        **extra_fields,
+    ):
         if not email:
             raise ValueError("The given username is not valid.")
         email = self.normalize_email(email)
@@ -49,7 +55,7 @@ class UserManager(BaseUserManager):
             is_staff=is_staff,
             is_superuser=is_superuser,
             date_joined=timezone.now(),
-            **extra_fields
+            **extra_fields,
         )
         user.set_password(password)
         user.save(using=self._db)
@@ -64,7 +70,7 @@ class UserManager(BaseUserManager):
             is_active=True,
             is_staff=False,
             is_superuser=False,
-            **extra_fields
+            **extra_fields,
         )
 
     def create_superuser(self, username, email, password, **extra_fields):
@@ -76,9 +82,8 @@ class UserManager(BaseUserManager):
             is_active=True,
             is_staff=True,
             is_superuser=True,
-            **extra_fields
+            **extra_fields,
         )
-
 
 
 class User(AbstractBaseUser, PermissionsMixin):
@@ -103,9 +108,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = [
-        "username"
-    ]
+    REQUIRED_FIELDS = ["username"]
 
     def __str__(self):
         return self.username

@@ -7,5 +7,6 @@ class UsersConfig(AppConfig):
 
     def ready(self):
         from .models import UserTier
+
         for tier in UserTier.objects.all():
             tier.save()

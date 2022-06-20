@@ -10,6 +10,5 @@ router.register("users", UserViewSet, basename="users")
 
 urlpatterns = [
     path("home/", home),
-    path('', include(router.urls)),
+    path("", include(router.urls)),
 ]
-
