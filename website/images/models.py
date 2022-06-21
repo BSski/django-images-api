@@ -50,13 +50,12 @@ class Image(models.Model):
         self.save()
 
     def save(self, *args, **kwargs):
-        for size in self.owner.user_tier.thumbnails_sizes['sizes']:
+        for size in self.owner.user_tier.thumbnails_sizes["sizes"]:
             print("\n\n\nsize:", size)
             print()
         super().save(*args, **kwargs)
         # przeiteruj wszystkie thumbnail sizes swojego tieru
         # i je wygeneruj
-
 
     # def save(self, *args, **kwargs):
     #     super().save(*args, **kwargs)

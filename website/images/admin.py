@@ -30,4 +30,5 @@ class CustomImageForm(forms.ModelForm):
 class ImagesAdmin(admin.ModelAdmin):
     form = CustomImageForm
 
+
 # SPRAWDZ CZY TEN CUSTOM IMAGE FORM WGL DZIALA BO CHYBA NIC NIE ZMIENIA

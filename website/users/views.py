@@ -14,6 +14,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
+
 # {
 #     'ResponseMetadata': {
 #         'RequestId': '4bcbe58b-b0cc-47a5-a1d9-79eda1987e58',
@@ -32,48 +33,48 @@ class UserViewSet(viewsets.ModelViewSet):
 #     'Payload': <botocore.response.StreamingBody object at 0x000001DB413DB010>
 # }
 
- # {
- #     'ResponseMetadata': {
- #         'RequestId': 'P1BKB5DJ4G1WWRHC',
- #         'HostId': 'ParLr2NhCWOHPkJhooS34e9t3E3w8nK6TdinklZfg+1r57qlgS+/MMRHxWFAn9OYEtzPpLg2L98=',
- #         'HTTPStatusCode': 200,
- #         'HTTPHeaders': {
- #            'x-amz-id-2': 'ParLr2NhCWOHPkJhooS34e9t3E3w8nK6TdinklZfg+1r57qlgS+/MMRHxWFAn9OYEtzPpLg2L98=',
- #             'x-amz-request-id': 'P1BKB5DJ4G1WWRHC',
- #             'date': 'Tue, 21 Jun 2022 21:33:03 GMT',
- #             'x-amz-bucket-region': 'eu-central-1',
- #             'content-type': 'application/xml',
- #             'transfer-encoding': 'chunked', 'server': 'AmazonS3'
- #         },
- #         'RetryAttempts': 1
- #     },
- #     'IsTruncated': False,
- #     'Contents': [
- #         {
- #             'Key': 'images/',
- #             'LastModified': datetime.datetime(2022, 6, 21, 20, 21, 45, tzinfo=tzutc()),
- #             'ETag': '"d41d8cd98f00b204e9800998ecf8427e"',
- #             'Size': 0,
- #             'StorageClass': 'STANDARD'
- #         },
- #         {
- #             'Key': 'images/ProceduraRozwiązaniProblemuInformatycznego.png',
- #             'LastModified': datetime.datetime(2022, 6, 21, 20, 22, 24, tzinfo=tzutc()),
- #             'ETag': '"40119faf0246909e11c6aaad29c7d124"',
- #             'Size': 272693,
- #             'StorageClass': 'STANDARD'
- #         },
- #         {
- #             'Key': 'images/cat.png',
- #             'LastModified': datetime.datetime(2022, 6, 21, 21, 2, 22, tzinfo=tzutc()),
- #             'ETag': '"6c9ab03babfa733b5e2d114e4eeb252e"',
- #             'Size': 477375,
- #             'StorageClass': 'STANDARD'
- #         }
- #     ],
- #     'Name': 'bsski-images-api',
- #     'Prefix': '',
- #     'MaxKeys': 1000,
- #     'EncodingType': 'url',
- #     'KeyCount': 3
- # }
+# {
+#     'ResponseMetadata': {
+#         'RequestId': 'P1BKB5DJ4G1WWRHC',
+#         'HostId': 'ParLr2NhCWOHPkJhooS34e9t3E3w8nK6TdinklZfg+1r57qlgS+/MMRHxWFAn9OYEtzPpLg2L98=',
+#         'HTTPStatusCode': 200,
+#         'HTTPHeaders': {
+#            'x-amz-id-2': 'ParLr2NhCWOHPkJhooS34e9t3E3w8nK6TdinklZfg+1r57qlgS+/MMRHxWFAn9OYEtzPpLg2L98=',
+#             'x-amz-request-id': 'P1BKB5DJ4G1WWRHC',
+#             'date': 'Tue, 21 Jun 2022 21:33:03 GMT',
+#             'x-amz-bucket-region': 'eu-central-1',
+#             'content-type': 'application/xml',
+#             'transfer-encoding': 'chunked', 'server': 'AmazonS3'
+#         },
+#         'RetryAttempts': 1
+#     },
+#     'IsTruncated': False,
+#     'Contents': [
+#         {
+#             'Key': 'images/',
+#             'LastModified': datetime.datetime(2022, 6, 21, 20, 21, 45, tzinfo=tzutc()),
+#             'ETag': '"d41d8cd98f00b204e9800998ecf8427e"',
+#             'Size': 0,
+#             'StorageClass': 'STANDARD'
+#         },
+#         {
+#             'Key': 'images/ProceduraRozwiązaniProblemuInformatycznego.png',
+#             'LastModified': datetime.datetime(2022, 6, 21, 20, 22, 24, tzinfo=tzutc()),
+#             'ETag': '"40119faf0246909e11c6aaad29c7d124"',
+#             'Size': 272693,
+#             'StorageClass': 'STANDARD'
+#         },
+#         {
+#             'Key': 'images/cat.png',
+#             'LastModified': datetime.datetime(2022, 6, 21, 21, 2, 22, tzinfo=tzutc()),
+#             'ETag': '"6c9ab03babfa733b5e2d114e4eeb252e"',
+#             'Size': 477375,
+#             'StorageClass': 'STANDARD'
+#         }
+#     ],
+#     'Name': 'bsski-images-api',
+#     'Prefix': '',
+#     'MaxKeys': 1000,
+#     'EncodingType': 'url',
+#     'KeyCount': 3
+# }
