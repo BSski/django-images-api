@@ -12,7 +12,7 @@ def upload_to(instance, filename):
 class Image(models.Model):
     name = models.CharField(
         validators=[
-            MinLengthValidator(4, "The field must contain at least 4 characters")
+            MinLengthValidator(2, "The field must contain at least 2 characters")
         ],
         max_length=255,
         blank=True,
@@ -23,7 +23,6 @@ class Image(models.Model):
         max_size=1920 * 1080, content_types=("image/jpeg", "image/png")
     )
     image = models.ImageField(upload_to=upload_to, validators=[validate_image])
-
     original_image_link = models.CharField(max_length=2500)
     thumbnails_links = models.JSONField(blank=True, null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="images")
@@ -49,6 +48,15 @@ class Image(models.Model):
 
         self.thumbnails_links = new_thumbnails_links
         self.save()
+
+    def save(self, *args, **kwargs):
+        for size in self.owner.user_tier.thumbnails_sizes['sizes']:
+            print("\n\n\nsize:", size)
+            print()
+        super().save(*args, **kwargs)
+        # przeiteruj wszystkie thumbnail sizes swojego tieru
+        # i je wygeneruj
+
 
     # def save(self, *args, **kwargs):
     #     super().save(*args, **kwargs)

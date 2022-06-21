@@ -29,3 +29,5 @@ class CustomImageForm(forms.ModelForm):
 @admin.register(Image)
 class ImagesAdmin(admin.ModelAdmin):
     form = CustomImageForm
+
+# SPRAWDZ CZY TEN CUSTOM IMAGE FORM WGL DZIALA BO CHYBA NIC NIE ZMIENIA
