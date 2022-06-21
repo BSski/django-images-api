@@ -3,6 +3,7 @@ from users.models import User
 from PIL import Image as Img
 from django.core.validators import MinLengthValidator
 from .validators import FileValidator
+from django.urls import reverse
 
 
 def upload_to(instance, filename):
@@ -19,11 +20,15 @@ class Image(models.Model):
         null=True,
         unique=True,
     )
-    validate_image = FileValidator(
-        max_size=1920 * 1080, content_types=("image/jpeg", "image/png")
+    image = models.ImageField(
+        upload_to=upload_to,
+        validators=[
+            FileValidator(
+                max_size=1920 * 1080, content_types=("image/jpeg", "image/png")
+            )
+        ]
     )
-    image = models.ImageField(upload_to=upload_to, validators=[validate_image])
-    original_image_link = models.CharField(max_length=2500)
+    original_image_link = models.CharField(max_length=2500, default="", blank=True, null=True)
     thumbnails_links = models.JSONField(blank=True, null=True)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="images")
 
@@ -50,9 +55,15 @@ class Image(models.Model):
         self.save()
 
     def save(self, *args, **kwargs):
-        for size in self.owner.user_tier.thumbnails_sizes["sizes"]:
-            print("\n\n\nsize:", size)
-            print()
+        super().save(*args, **kwargs)
+        thumbnail_sizes = self.owner.user_tier.thumbnails_sizes["sizes"]
+        if not self.thumbnails_links:
+            self.thumbnails_links = {}
+        for size in thumbnail_sizes:
+            self.thumbnails_links[size] = reverse("get_or_create_thumbnail_link", args=[self.owner, size, self.name])
+
+        print("\n\nself.thumbnails_links:", self.thumbnails_links)
+
         super().save(*args, **kwargs)
         # przeiteruj wszystkie thumbnail sizes swojego tieru
         # i je wygeneruj
