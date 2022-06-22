@@ -19,8 +19,6 @@ class UserTier(models.Model):
         hashids = Hashids()
         hashed_settings = hashids.encode(
             *(
-                self.can_use_original_image_link,
-                self.can_fetch_expiring_link,
                 *self.thumbnails_sizes.get("sizes", []),
             )
         )

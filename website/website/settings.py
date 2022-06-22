@@ -80,7 +80,18 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "USER_DETAILS_SERIALIZER": "users.serializers.UserDetailsSerializer",
     "DEFAULT_PAGINATION_CLASS": 'rest_framework.pagination.PageNumberPagination',
-    "PAGE_SIZE": 2
+    "PAGE_SIZE": 2,
+    "DEFAULT_THROTTLE_CLASSES": (
+        # 'rest_framework.throttling.AnonRateThrottle',
+        # 'rest_framework.throttling.UserRateThrottle',
+        'rest_framework.throttling.ScopedRateThrottle',
+    ),
+    "DEFAULT_THROTTLE_RATES": {
+        # 'anon': '2/day',
+        # 'user': '4/day',
+        'images_viewset': '8/day',
+        'dj_rest_auth': '10000/day'
+    }
 }
 
 
@@ -215,4 +226,4 @@ AWS_THUMBNAILS_STORAGE_BUCKET_NAME = os.environ.get(
     "AWS_THUMBNAILS_STORAGE_BUCKET_NAME"
 )
 DEFAULT_FILE_STORAGE = os.environ.get("DEFAULT_FILE_STORAGE")
-AWS_S3_FILE_OVERWRITE = False
+AWS_S3_FILE_OVERWRITE = True

@@ -1,6 +1,15 @@
 from django.contrib import admin
 from .models import Image
-from .forms import CustomImageForm, CustomAddImageForm
+from .forms import CustomImageForm, CustomAddImageForm, CustomInlineImageForm
+
+
+class ImageAdminInline(admin.TabularInline):
+    model = Image
+    form = CustomInlineImageForm
+    readonly_fields = ('image',)
+
+    def has_add_permission(self, request, *args, **kwargs):
+        return False
 
 
 @admin.register(Image)

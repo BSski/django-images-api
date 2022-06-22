@@ -22,3 +22,12 @@ class CustomImageForm(forms.ModelForm):
             "original_image_link",
             "thumbnails_links"
         ]
+
+
+class CustomInlineImageForm(forms.ModelForm):
+    class Meta:
+        model = Image
+        fields = [
+            "name",
+            "image",
+        ]

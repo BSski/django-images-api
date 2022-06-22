@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (
     ImageViewSet,
     create_temp_thumbnail_link,
-    create_temporary_original_image_link
+    create_temp_original_image_link
 )
 
 
@@ -20,7 +20,7 @@ urlpatterns = [
     ),
     path(
         "original_picture/<str:img_name>/",
-        create_temporary_original_image_link,
-        name="create_temporary_original_image_link"
+        create_temp_original_image_link,
+        name="create_temp_original_image_link"
     )
 ]

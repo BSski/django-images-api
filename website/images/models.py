@@ -5,6 +5,7 @@ from django.core.validators import MinLengthValidator
 from .validators import FileValidator
 from django.urls import reverse
 import time
+import os
 
 
 def content_file_name(instance, filename):
@@ -38,39 +39,55 @@ class Image(models.Model):
         return f'{self.id}, {self.owner}: "{self.name}"'
 
     def update_thumbnails(self, thumbnails_sizes):
+        self.thumbnails_links = self._create_thumbnails_links(thumbnails_sizes, self.thumbnails_links)
+        super().save()
+
+    def _create_thumbnails_links(self, thumbnails_sizes, thumbnails_links):
         if thumbnails_sizes is None:
             thumbnails_sizes = []
 
-        if self.thumbnails_links is None:
-            self.thumbnails_links = {}
+        if thumbnails_links is None:
+            thumbnails_links = {}
 
         unique_thumbnails_sizes = set(map(str, thumbnails_sizes))
-        if set(self.thumbnails_links.keys()) == unique_thumbnails_sizes:
-            return
+        if set(thumbnails_links.keys()) == unique_thumbnails_sizes:
+            return thumbnails_links
+
+        get_link = lambda size: "http://localhost:{}{}".format(os.environ.get('PORT'), reverse(
+                'create_temp_thumbnail_link',
+                args=[size, self.image.name.split('/')[-1]]
+                ))
 
         new_thumbnails_links = {
-            size: self.thumbnails_links.get(size, "")
+            size: thumbnails_links.get(size, get_link(size))
             for size in unique_thumbnails_sizes
         }
 
-        self.thumbnails_links = new_thumbnails_links
-        self.save()
+        return new_thumbnails_links
+
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        thumbnail_sizes = self.owner.user_tier.thumbnails_sizes["sizes"]
-        if not self.thumbnails_links:
-            self.thumbnails_links = {}
-        for size in thumbnail_sizes:
-            self.thumbnails_links[size] = "{}".format(reverse(
-                'get_or_create_thumbnail_link',
-                args=[size, self.image.name.split('/')[1]]
-                ),
-                "?time_exp=300"
-            )
+        thumbnails_sizes = self.owner.user_tier.thumbnails_sizes["sizes"]
+        self.thumbnails_links = self._create_thumbnails_links(thumbnails_sizes, self.thumbnails_links)
 
-        self.original_image_link = reverse(
-            "create_temporary_original_image_link",
-            args=[self.image.name.split('/')[1]]
-        )
+        self.original_image_link = \
+            "http://localhost:{}{}".format(os.environ.get('PORT'), reverse(
+                'create_temp_original_image_link',
+                args=[self.image.name.split('/')[-1]]
+            ))
+
         super().save(*args, **kwargs)
+
+
+
+
+
+
+
+
+
+
+
+
+

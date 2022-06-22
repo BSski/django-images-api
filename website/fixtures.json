@@ -58,5 +58,17 @@
             "can_use_original_image_link": 1,
             "can_fetch_expiring_link": 1
         }
+    },
+    {
+        "pk": 6,
+        "model": "users.UserTier",
+        "fields": {
+            "name": "CustomBasic",
+            "thumbnails_sizes": {
+                "sizes": [200]
+            },
+            "can_use_original_image_link": 1,
+            "can_fetch_expiring_link": 0
+        }
     }
 ]

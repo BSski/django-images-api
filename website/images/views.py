@@ -5,29 +5,43 @@ from .serializers import ImageSerializer
 from rest_framework import viewsets
 import boto3
 import json
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.pagination import LimitOffsetPagination
 from website import settings
 from django.core.exceptions import ValidationError
-
+from .decorators import (
+    has_certain_thumbnail_size_permission,
+    has_fetch_expiring_link_permission,
+    has_use_original_image_link_permission
+)
 
 
 class ImageViewSet(viewsets.ModelViewSet):
     queryset = Image.objects.all()
     serializer_class = ImageSerializer
     pagination_class = LimitOffsetPagination
-    # permission_classes = [
-    #     permissions.IsAuthenticatedOrReadOnly]
+    throttle_scope = "images_viewset"
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
 
+    def get_queryset(self):
+        user = self.request.user
+        return Image.objects.filter(owner=user)
+
 
 @api_view()
-def create_temp_thumbnail_link(request, new_height, img_name):
-    time_exp = request.GET.get("time_exp", None)
+@throttle_classes([UserRateThrottle])
+@has_fetch_expiring_link_permission
+@has_certain_thumbnail_size_permission
+def create_temp_thumbnail_link(request, new_height, img_name, has_time_exp_permission):
+    time_exp = request.query_params.get("time_exp", None)
     if time_exp:
+        if not has_time_exp_permission:
+            return Response({"status": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
+
         if not time_exp.isnumeric():
             raise ValidationError(
                 'Inappropriate argument type: time_exp has to be an integer'
@@ -37,8 +51,7 @@ def create_temp_thumbnail_link(request, new_height, img_name):
                 'Inappropriate value: time_exp is not between 300 and 30000'
             )
     else:
-        time_exp = 300
-
+        time_exp = 120
 
     s3_client = boto3.client(
         "s3",
@@ -83,7 +96,9 @@ def create_temp_thumbnail_link(request, new_height, img_name):
 
 
 @api_view()
-def create_temporary_original_image_link(request, img_name):
+@throttle_classes([UserRateThrottle])
+@has_use_original_image_link_permission
+def create_temp_original_image_link(request, img_name):
     s3_client = boto3.client(
         "s3",
         aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
