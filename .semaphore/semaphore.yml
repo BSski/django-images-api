@@ -1,0 +1,63 @@
+version: v1.0
+name: Python
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu2004
+blocks:
+  - name: Build
+    task:
+      jobs:
+        - name: Setup
+          commands:
+            - sem-version python 3.9
+            - checkout
+            - mkdir .pip_cache
+            - cache restore
+            - pip install --cache-dir .pip_cache -r requirements.txt
+            - cache store
+  - name: Tests
+    task:
+      env_vars:
+        - name: DEBUG
+          value: '0'
+        - name: SECRET_KEY
+          value: this_is_a_test_key_j0&wbl8ng)zemqby(abss_o1e2^p(cxn2xn*xuj-&@l9!-s
+        - name: CSRF_COOKIE_SECURE
+          value: '1'
+        - name: SESSION_COOKIE_SECURE
+          value: '1'
+      prologue:
+        commands:
+          - sem-version python 3.9
+          - checkout
+          - cache restore
+          - pip install --cache-dir .pip_cache -r requirements.txt
+      jobs:
+        - name: Unit tests
+          commands:
+            - cd api
+            - python manage.py makemigrations
+            - python manage.py migrate
+            - python manage.py test
+        - name: Deploy check
+          commands:
+            - cd api
+            - python manage.py check --deploy
+        - name: Style check
+          commands:
+            - pip install black
+            - black --check api/
+        - name: Tests coverage badge
+          commands:
+            - cd api
+            - coverage run --source='books' manage.py test
+            - coverage xml
+            - 'curl -Os https://uploader.codecov.io/latest/linux/codecov'
+            - chmod +x codecov
+            - './codecov -t ${CODECOV_TOKEN}'
+promotions:
+  - name: Dockerize
+    pipeline_file: pipeline_2.yml
+    auto_promote:
+      when: branch = 'main' AND result = 'passed'
