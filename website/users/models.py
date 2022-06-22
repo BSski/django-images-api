@@ -27,6 +27,7 @@ class UserTier(models.Model):
         settings_changed = self.settings_hash != hashed_settings
         if settings_changed:
             self.settings_hash = hashed_settings
+
         super().save(*args, **kwargs)
 
         if settings_changed:
@@ -45,7 +46,7 @@ class UserManager(BaseUserManager):
         is_superuser,
         **extra_fields,
     ):
-        if not email:
+        if not username:
             raise ValueError("The given username is not valid.")
         email = self.normalize_email(email)
         user = self.model(

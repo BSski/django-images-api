@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from .serializers import UserSerializer
 from .models import User
 from rest_framework import viewsets
+from rest_framework.pagination import LimitOffsetPagination
 
 
 @api_view()
@@ -13,7 +14,8 @@ def home(request):
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-
+    pagination_class = LimitOffsetPagination
+    
 
 # {
 #     'ResponseMetadata': {

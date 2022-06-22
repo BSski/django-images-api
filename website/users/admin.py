@@ -74,17 +74,6 @@ class CustomUserAdmin(UserAdmin):
     ordering = ("pk",)
     filter_horizontal = ()
 
-    # def get_form(self, request, obj=None, **kwargs):
-    #     form = super().get_form(request, obj, **kwargs)
-    #
-    #     is_superuser = request.user.is_superuser
-    #     if not is_superuser:
-    #         form.base_fields['username'].disabled = True
-    #         form.base_fields['is_superuser'].disabled = True
-    #         form.base_fields['user_permissions'].disabled = True
-    #         form.base_fields['groups'].disabled = True
-    #     return form
-
 
 admin.site.register(User, CustomUserAdmin)
 admin.site.register(UserTier)

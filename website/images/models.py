@@ -62,9 +62,11 @@ class Image(models.Model):
         if not self.thumbnails_links:
             self.thumbnails_links = {}
         for size in thumbnail_sizes:
-            self.thumbnails_links[size] = reverse(
-                "get_or_create_thumbnail_link",
+            self.thumbnails_links[size] = "{}".format(reverse(
+                'get_or_create_thumbnail_link',
                 args=[size, self.image.name.split('/')[1]]
+                ),
+                "?time_exp=300"
             )
 
         self.original_image_link = reverse(
