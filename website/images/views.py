@@ -61,6 +61,7 @@ def get_or_create_thumbnail_link(request, new_height, img_name):
 def get_or_create_thumbnail_link(request, new_height, img_name):
     # przekazuj tu request.params.get("temp_link") i jeśli jest, to dodatkowo
     # generuj temporary link do tego thumbnailsa
+    # temp_link=300-30000, z tego zakresu liczba i to w sekundach po ilu expiruje
 
     s3_client = boto3.client(
         "s3",
