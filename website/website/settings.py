@@ -82,13 +82,18 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": 'rest_framework.pagination.PageNumberPagination',
     "PAGE_SIZE": 2,
     "DEFAULT_THROTTLE_CLASSES": (
-        # 'rest_framework.throttling.AnonRateThrottle',
-        # 'rest_framework.throttling.UserRateThrottle',
+        'images.throttles.OriginalImgLinkBurstThrottle',
+        'images.throttles.OriginalImgLinkSustainedThrottle',
+        'images.throttles.ThumbnailLinkBurstThrottle',
+        'images.throttles.ThumbnailLinkSustainedThrottle',
         'rest_framework.throttling.ScopedRateThrottle',
     ),
     "DEFAULT_THROTTLE_RATES": {
-        # 'anon': '2/day',
-        # 'user': '4/day',
+        'original_img_link_burst_throttle': '2/hour',  # 20/hour
+        'original_img_link_sustained_throttle': '6/day',  # 60/day
+        'thumbnail_link_burst_throttle': '2/hour',  # 20/hour
+        'thumbnail_link_sustained_throttle': '8/day',  # 80/day
+        #'user': '10/day'
         'images_viewset': '8/day',
         'dj_rest_auth': '10000/day'
     }

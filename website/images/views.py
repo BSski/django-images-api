@@ -1,13 +1,11 @@
 from .models import Image
 from .serializers import ImageSerializer
-
-# from rest_framework import permissions
 from rest_framework import viewsets
 import boto3
 import json
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, throttle_classes
 from rest_framework.pagination import LimitOffsetPagination
 from website import settings
 from django.core.exceptions import ValidationError
@@ -15,6 +13,12 @@ from .decorators import (
     has_certain_thumbnail_size_permission,
     has_fetch_expiring_link_permission,
     has_use_original_image_link_permission
+)
+from .throttles import (
+    OriginalImgLinkBurstThrottle,
+    OriginalImgLinkSustainedThrottle,
+    ThumbnailLinkBurstThrottle,
+    ThumbnailLinkSustainedThrottle
 )
 
 
@@ -32,8 +36,8 @@ class ImageViewSet(viewsets.ModelViewSet):
         return Image.objects.filter(owner=user)
 
 
-@api_view()
-@throttle_classes([UserRateThrottle])
+@api_view(['GET'])
+@throttle_classes([ThumbnailLinkBurstThrottle, ThumbnailLinkSustainedThrottle])
 @has_fetch_expiring_link_permission
 @has_certain_thumbnail_size_permission
 def create_temp_thumbnail_link(request, new_height, img_name, has_time_exp_permission):
@@ -95,8 +99,9 @@ def create_temp_thumbnail_link(request, new_height, img_name, has_time_exp_permi
     return Response({"thumbnail_temporary_link": temp_url})
 
 
-@api_view()
-@throttle_classes([UserRateThrottle])
+
+@api_view(['GET'])
+@throttle_classes([OriginalImgLinkBurstThrottle, OriginalImgLinkSustainedThrottle])
 @has_use_original_image_link_permission
 def create_temp_original_image_link(request, img_name):
     s3_client = boto3.client(
