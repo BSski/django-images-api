@@ -4,10 +4,12 @@ from PIL import Image as Img
 from django.core.validators import MinLengthValidator
 from .validators import FileValidator
 from django.urls import reverse
+import time
 
 
-def upload_to(instance, filename):
-    return f"images/{filename}"
+def content_file_name(instance, filename):
+    ext = filename.split('.')[-1]
+    return f"images/{instance.owner.id}_{str(time.time()).replace('.', '')}.{ext}"
 
 
 class Image(models.Model):
@@ -21,7 +23,7 @@ class Image(models.Model):
         unique=True,
     )
     image = models.ImageField(
-        upload_to=upload_to,
+        upload_to=content_file_name,
         validators=[
             FileValidator(
                 max_size=1920 * 1080, content_types=("image/jpeg", "image/png")
@@ -60,22 +62,13 @@ class Image(models.Model):
         if not self.thumbnails_links:
             self.thumbnails_links = {}
         for size in thumbnail_sizes:
-            self.thumbnails_links[size] = reverse("get_or_create_thumbnail_link", args=[self.owner, size, self.name])
+            self.thumbnails_links[size] = reverse(
+                "get_or_create_thumbnail_link",
+                args=[size, self.image.name.split('/')[1]]
+            )
 
-        print("\n\nself.thumbnails_links:", self.thumbnails_links)
-
+        self.original_image_link = reverse(
+            "create_temporary_original_image_link",
+            args=[self.image.name.split('/')[1]]
+        )
         super().save(*args, **kwargs)
-        # przeiteruj wszystkie thumbnail sizes swojego tieru
-        # i je wygeneruj
-
-    # def save(self, *args, **kwargs):
-    #     super().save(*args, **kwargs)
-    #     img = Img.open(self.image.url.lstrip('/'))
-    #     width, height = img.size
-    #     """for new_height in user's_user_tier_allowed_sizes:
-    #         img.thumbnail((calculated sizes))
-    #         img.save(f'media/images/{self.owner}_{self.name}_{new_height}.jpg')
-    #     """
-    #     new_height = 100
-    #     img.thumbnail((new_height, int(width * (new_height / height))))
-    #     img.save(f'media/images/{self.owner}_{self.name}_{new_height}.png')
