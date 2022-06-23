@@ -101,7 +101,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     city = models.CharField(max_length=100, blank=True, null=True)
     about_me = models.TextField(max_length=100, blank=True, null=True)
     user_tier = models.ForeignKey(
-        UserTier, on_delete=models.SET_NULL, blank=True, null=True, related_name="users", default=3
+        UserTier, on_delete=models.SET_NULL, blank=True, null=True, related_name="users"
     )
 
     objects = UserManager()
