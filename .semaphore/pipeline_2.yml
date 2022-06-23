@@ -11,9 +11,9 @@ blocks:
         - name: Build
           commands:
             - 'echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin'
-            - 'docker pull $DOCKER_USERNAME/books-api:latest || true'
-            - 'docker build --cache-from=$DOCKER_USERNAME/books-api:latest -t $DOCKER_USERNAME/books-api:latest .'
-            - 'docker push $DOCKER_USERNAME/books-api:latest'
+            - 'docker pull $DOCKER_USERNAME/images-api:latest || true'
+            - 'docker build --cache-from=$DOCKER_USERNAME/images-api:latest -t $DOCKER_USERNAME/images-api:latest .'
+            - 'docker push $DOCKER_USERNAME/images-api:latest'
       secrets:
         - name: dockerhub
       env_vars:
@@ -25,12 +25,12 @@ blocks:
           value: '1'
       prologue:
         commands:
-          - sem-version python 3.9
+          - sem-version python 3.7
           - checkout
           - cache restore
           - mkdir -p .pip_cache
           - pip install --cache-dir .pip_cache -r requirements.txt
-          - cd api
+          - cd website
           - python manage.py makemigrations
           - python manage.py migrate
           - cd ..
