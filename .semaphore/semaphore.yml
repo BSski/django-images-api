@@ -37,16 +37,9 @@ blocks:
         - name: Unit tests
           commands:
             - cd website
-            - python manage.py migrate --run-syncdb
-            - echo here0
-            - python manage.py migrate
-            - echo here1
             - python manage.py makemigrations users
-            - echo here2
             - python manage.py makemigrations images
-            - echo here3
             - python manage.py migrate
-            - echo here4
             - python manage.py test
         - name: Deploy check
           commands:
