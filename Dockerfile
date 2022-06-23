@@ -1,4 +1,4 @@
-FROM python:3.7-buster
+FROM python:3.8-buster
 
 RUN mkdir -p /opt/app
 RUN mkdir -p /opt/app/pip_cache
