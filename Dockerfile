@@ -1,11 +1,11 @@
-FROM python:3.9-buster
+FROM python:3.7-buster
 
 RUN mkdir -p /opt/app
 RUN mkdir -p /opt/app/pip_cache
-RUN mkdir -p /opt/app/api
+RUN mkdir -p /opt/app/website
 COPY requirements.txt start-server.sh /opt/app/
 COPY .pip_cache /opt/app/pip_cache/
-COPY api /opt/app/api/
+COPY website /opt/app/website/
 WORKDIR /opt/app
 RUN pip install -r requirements.txt --cache-dir /opt/app/pip_cache
 RUN chown -R www-data:www-data /opt/app
