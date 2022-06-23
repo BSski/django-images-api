@@ -37,6 +37,7 @@ blocks:
         - name: Unit tests
           commands:
             - cd website
+            - python manage.py migrate
             - echo here1
             - python manage.py makemigrations users
             - echo here2
