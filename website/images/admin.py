@@ -18,6 +18,7 @@ class ImageAdmin(admin.ModelAdmin):
     add_form = CustomAddImageForm
 
     list_display = (
+        "file_uuid",
         "name",
         "id",
         "owner"
@@ -39,4 +40,4 @@ class ImageAdmin(admin.ModelAdmin):
 
     def get_readonly_fields(self, request, obj=None):
         """Set Image field to read-only during editing."""
-        return self.readonly_fields + ('image', ) if obj else self.readonly_fields
+        return self.readonly_fields + ('image', "file_uuid",) if obj else self.readonly_fields

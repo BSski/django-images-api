@@ -4,25 +4,24 @@ from PIL import Image as Img
 from django.core.validators import MinLengthValidator
 from .validators import FileValidator
 from django.urls import reverse
-import time
 import os
+import uuid
 
 
 def content_file_name(instance, filename):
     ext = filename.split('.')[-1]
-    return f"images/{instance.owner.id}_{str(time.time()).replace('.', '')}.{ext}"
+    return f"images/{instance.owner.id}_{instance.file_uuid}.{ext}"
 
 
 class Image(models.Model):
     name = models.CharField(
         validators=[
-            MinLengthValidator(2, "The field must contain at least 2 characters")
+            MinLengthValidator(3, "The field must contain at least 3 characters")
         ],
         max_length=255,
-        blank=True,
-        null=True,
         unique=True,
     )
+    file_uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     image = models.ImageField(
         upload_to=content_file_name,
         validators=[
@@ -42,7 +41,7 @@ class Image(models.Model):
         self.thumbnails_links = self._create_thumbnails_links(thumbnails_sizes, self.thumbnails_links)
         super().save()
 
-    def _create_thumbnails_links(self, thumbnails_sizes, thumbnails_links):
+    def _create_thumbnails_links(self, thumbnails_sizes, thumbnails_links, file_name):
         if thumbnails_sizes is None:
             thumbnails_sizes = []
 
@@ -52,11 +51,14 @@ class Image(models.Model):
         unique_thumbnails_sizes = set(map(str, thumbnails_sizes))
         if set(thumbnails_links.keys()) == unique_thumbnails_sizes:
             return thumbnails_links
-
-        get_link = lambda size: "http://localhost:{}{}".format(os.environ.get('PORT'), reverse(
+        print("\n\n\n type:", type(file_name))
+        get_link = lambda size: "http://localhost:{}{}".format(
+            os.environ.get('PORT'),
+            reverse(
                 'create_temp_thumbnail_link',
-                args=[size, self.image.name.split('/')[-1]]
-                ))
+                args=[size, file_name]
+                )
+        )
 
         new_thumbnails_links = {
             size: thumbnails_links.get(size, get_link(size))
@@ -67,14 +69,20 @@ class Image(models.Model):
 
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+        ext = self.image.name.split('.')[-1]
+        file_name = f"{self.owner.id}_{self.file_uuid}.{ext}"
+
         thumbnails_sizes = self.owner.user_tier.thumbnails_sizes["sizes"]
-        self.thumbnails_links = self._create_thumbnails_links(thumbnails_sizes, self.thumbnails_links)
+        self.thumbnails_links = self._create_thumbnails_links(
+            thumbnails_sizes,
+            self.thumbnails_links,
+            file_name
+        )
 
         self.original_image_link = \
             "http://localhost:{}{}".format(os.environ.get('PORT'), reverse(
                 'create_temp_original_image_link',
-                args=[self.image.name.split('/')[-1]]
+                args=[file_name]
             ))
 
         super().save(*args, **kwargs)

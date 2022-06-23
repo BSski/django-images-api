@@ -1,5 +1,5 @@
 from .models import Image
-from .serializers import ImageSerializer
+from .serializers import ImageSerializer, AddImageSerializer
 from rest_framework import viewsets
 import boto3
 import json
@@ -15,18 +15,39 @@ from .decorators import (
     has_use_original_image_link_permission
 )
 from .throttles import (
+    AnonymousBurstThrottle,
+    AnonymousSustainedThrottle,
     OriginalImgLinkBurstThrottle,
     OriginalImgLinkSustainedThrottle,
     ThumbnailLinkBurstThrottle,
-    ThumbnailLinkSustainedThrottle
+    ThumbnailLinkSustainedThrottle,
+    PostImageUserBurstThrottle,
+    PostImageUserSustainedThrottle,
+    GetImagesUserBurstThrottle,
+    GetImagesUserSustainedThrottle
 )
 
 
 class ImageViewSet(viewsets.ModelViewSet):
     queryset = Image.objects.all()
-    serializer_class = ImageSerializer
     pagination_class = LimitOffsetPagination
-    throttle_scope = "images_viewset"
+    throttle_classes = [
+        AnonymousBurstThrottle,
+        AnonymousSustainedThrottle,
+        PostImageUserBurstThrottle,
+        PostImageUserSustainedThrottle,
+        GetImagesUserBurstThrottle,
+        GetImagesUserSustainedThrottle
+    ]
+
+    serializer_classes = {
+        'list': ImageSerializer,
+        'create': AddImageSerializer
+    }
+    default_serializer_class = ImageSerializer  # Your default serializer
+
+    def get_serializer_class(self):
+        return self.serializer_classes.get(self.action, self.default_serializer_class)
 
     def perform_create(self, serializer):
         serializer.save(owner=self.request.user)
