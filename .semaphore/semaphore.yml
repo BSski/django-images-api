@@ -27,6 +27,8 @@ blocks:
           value: '1'
         - name: SESSION_COOKIE_SECURE
           value: '1'
+        - name: DEFAULT_FILE_STORAGE
+          value: DEFAULT_FILE_STORAGE=storages.backends.s3boto3.S3Boto3Storage
       prologue:
         commands:
           - sem-version python 3.8
