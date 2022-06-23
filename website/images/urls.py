@@ -1,16 +1,16 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
-from .views import (
+from images.views import (
     ImageViewSet,
     create_temp_thumbnail_link,
-    create_temp_original_image_link
+    create_temp_original_image_link,
 )
 
 
 router = DefaultRouter()
 router.register("images", ImageViewSet, basename="images")
 
-app_name = 'images'
+app_name = "images"
 urlpatterns = [
     path("", include(router.urls)),
     path(
@@ -21,6 +21,6 @@ urlpatterns = [
     path(
         "original_picture/<str:img_name>/",
         create_temp_original_image_link,
-        name="create_temp_original_image_link"
-    )
+        name="create_temp_original_image_link",
+    ),
 ]

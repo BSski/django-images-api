@@ -86,34 +86,34 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "USER_DETAILS_SERIALIZER": "users.serializers.UserDetailsSerializer",
-    "DEFAULT_PAGINATION_CLASS": 'rest_framework.pagination.PageNumberPagination',
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 2,
     "DEFAULT_THROTTLE_CLASSES": (
-        'images.throttles.AnonymousBurstThrottle',
-        'images.throttles.AnonymousSustainedThrottle',
-        'images.throttles.OriginalImgLinkBurstThrottle',
-        'images.throttles.OriginalImgLinkSustainedThrottle',
-        'images.throttles.ThumbnailLinkBurstThrottle',
-        'images.throttles.ThumbnailLinkSustainedThrottle',
-        'images.throttles.PostImageUserBurstThrottle',
-        'images.throttles.PostImageUserSustainedThrottle',
-        'images.throttles.PostImageUserBurstThrottle',
-        'images.throttles.GetImagesUserSustainedThrottle',
-        'rest_framework.throttling.ScopedRateThrottle',
+        "images.throttles.AnonymousBurstThrottle",
+        "images.throttles.AnonymousSustainedThrottle",
+        "images.throttles.OriginalImgLinkBurstThrottle",
+        "images.throttles.OriginalImgLinkSustainedThrottle",
+        "images.throttles.ThumbnailLinkBurstThrottle",
+        "images.throttles.ThumbnailLinkSustainedThrottle",
+        "images.throttles.PostImageUserBurstThrottle",
+        "images.throttles.PostImageUserSustainedThrottle",
+        "images.throttles.PostImageUserBurstThrottle",
+        "images.throttles.GetImagesUserSustainedThrottle",
+        "rest_framework.throttling.ScopedRateThrottle",
     ),
     "DEFAULT_THROTTLE_RATES": {
-        'anonymous_burst_throttle': '8/hour',
-        'anonymous_sustained_throttle': '20/day',
-        'original_img_link_burst_throttle': '20/hour',  # 20/hour
-        'original_img_link_sustained_throttle': '60/day',  # 60/day
-        'thumbnail_link_burst_throttle': '20/hour',  # 20/hour
-        'thumbnail_link_sustained_throttle': '80/day',  # 80/day
-        'post_image_user_burst_throttle': '15/hour',
-        'post_image_user_sustained_throttle': '50/day',
-        'get_images_user_burst_throttle': '40/hour',
-        'get_images_user_sustained_throttle': '150/day',
-        'dj_rest_auth': '4/min'
-    }
+        "anonymous_burst_throttle": "8/hour",
+        "anonymous_sustained_throttle": "20/day",
+        "original_img_link_burst_throttle": "20/hour",  # 20/hour
+        "original_img_link_sustained_throttle": "60/day",  # 60/day
+        "thumbnail_link_burst_throttle": "20/hour",  # 20/hour
+        "thumbnail_link_sustained_throttle": "80/day",  # 80/day
+        "post_image_user_burst_throttle": "15/hour",
+        "post_image_user_sustained_throttle": "50/day",
+        "get_images_user_burst_throttle": "40/hour",
+        "get_images_user_sustained_throttle": "150/day",
+        "dj_rest_auth": "4/min",
+    },
 }
 
 

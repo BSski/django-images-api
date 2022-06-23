@@ -1,5 +1,5 @@
-from .models import Image
-from .serializers import ImageSerializer, AddImageSerializer
+from images.models import Image
+from images.serializers import ImageSerializer, AddImageSerializer
 from rest_framework import viewsets
 import boto3
 import json
@@ -12,9 +12,9 @@ from django.core.exceptions import ValidationError
 from .decorators import (
     has_certain_thumbnail_size_permission,
     has_fetch_expiring_link_permission,
-    has_use_original_image_link_permission
+    has_use_original_image_link_permission,
 )
-from .throttles import (
+from images.throttles import (
     AnonymousBurstThrottle,
     AnonymousSustainedThrottle,
     OriginalImgLinkBurstThrottle,
@@ -24,7 +24,7 @@ from .throttles import (
     PostImageUserBurstThrottle,
     PostImageUserSustainedThrottle,
     GetImagesUserBurstThrottle,
-    GetImagesUserSustainedThrottle
+    GetImagesUserSustainedThrottle,
 )
 
 
@@ -37,11 +37,9 @@ class ImageViewSet(viewsets.ModelViewSet):
         PostImageUserBurstThrottle,
         PostImageUserSustainedThrottle,
         GetImagesUserBurstThrottle,
-        GetImagesUserSustainedThrottle
+        GetImagesUserSustainedThrottle,
     ]
-    serializer_classes = {
-        'create': AddImageSerializer
-    }
+    serializer_classes = {"create": AddImageSerializer}
     default_serializer_class = ImageSerializer  # Your default serializer
 
     def get_serializer_class(self):
@@ -55,7 +53,7 @@ class ImageViewSet(viewsets.ModelViewSet):
         return Image.objects.filter(owner=user)
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 @throttle_classes([ThumbnailLinkBurstThrottle, ThumbnailLinkSustainedThrottle])
 @has_fetch_expiring_link_permission
 @has_certain_thumbnail_size_permission
@@ -67,11 +65,11 @@ def create_temp_thumbnail_link(request, new_height, img_name, has_time_exp_permi
 
         if not time_exp.isnumeric():
             raise ValidationError(
-                'Inappropriate argument type: time_exp has to be an integer'
+                "Inappropriate argument type: time_exp has to be an integer"
             )
         if int(time_exp) < 300 or int(time_exp) > 30000:
             raise ValidationError(
-                'Inappropriate value: time_exp is not between 300 and 30000'
+                "Inappropriate value: time_exp is not between 300 and 30000"
             )
     else:
         time_exp = 120
@@ -80,33 +78,35 @@ def create_temp_thumbnail_link(request, new_height, img_name, has_time_exp_permi
         "s3",
         aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
         aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-        region_name=settings.AWS_S3_REGION_NAME
+        region_name=settings.AWS_S3_REGION_NAME,
     )
     temp_url = s3_client.generate_presigned_url(
-        'get_object',
+        "get_object",
         Params={
-            'Bucket': settings.AWS_THUMBNAILS_STORAGE_BUCKET_NAME,
-            'Key': f'images/{new_height}_{img_name}',
+            "Bucket": settings.AWS_THUMBNAILS_STORAGE_BUCKET_NAME,
+            "Key": f"images/{new_height}_{img_name}",
         },
-        ExpiresIn=time_exp
+        ExpiresIn=time_exp,
     )
 
     result = s3_client.list_objects_v2(
         Bucket=settings.AWS_THUMBNAILS_STORAGE_BUCKET_NAME
     )
     img_path = f"images/{new_height}_{img_name}"
-    if "Contents" not in result or all(dictionary["Key"] != img_path for dictionary in result["Contents"]):
+    if "Contents" not in result or all(
+        dictionary["Key"] != img_path for dictionary in result["Contents"]
+    ):
         print("Key doesn't exist in the bucket. Adding a thumbnail.")
         bucket_name = settings.AWS_STORAGE_BUCKET_NAME
         destination_bucket = settings.AWS_THUMBNAILS_STORAGE_BUCKET_NAME
 
-        ext = img_name.split('.')[-1]
+        ext = img_name.split(".")[-1]
         event_data = {
             "bucket_name": bucket_name,
             "destination_bucket_name": destination_bucket,
             "image_name": img_name,
             "new_height": new_height,
-            "content_type": 'image/png' if ext == 'png' else 'image/jpeg'
+            "content_type": "image/png" if ext == "png" else "image/jpeg",
         }
         lambda_client = boto3.client("lambda", region_name="eu-central-1")
         lambda_client.invoke(
@@ -118,8 +118,7 @@ def create_temp_thumbnail_link(request, new_height, img_name, has_time_exp_permi
     return Response({"thumbnail_temporary_link": temp_url})
 
 
-
-@api_view(['GET'])
+@api_view(["GET"])
 @throttle_classes([OriginalImgLinkBurstThrottle, OriginalImgLinkSustainedThrottle])
 @has_use_original_image_link_permission
 def create_temp_original_image_link(request, img_name):
@@ -127,14 +126,14 @@ def create_temp_original_image_link(request, img_name):
         "s3",
         aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
         aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-        region_name=settings.AWS_S3_REGION_NAME
+        region_name=settings.AWS_S3_REGION_NAME,
     )
     temp_url = s3_client.generate_presigned_url(
-        'get_object',
+        "get_object",
         Params={
-            'Bucket': settings.AWS_STORAGE_BUCKET_NAME,
-            'Key': f'images/{img_name}',
+            "Bucket": settings.AWS_STORAGE_BUCKET_NAME,
+            "Key": f"images/{img_name}",
         },
-        ExpiresIn=1800
+        ExpiresIn=1800,
     )
     return Response({"original_image_temporary_link": temp_url})

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Image
+from images.models import Image
 
 
 class CustomAddImageForm(forms.ModelForm):
@@ -15,13 +15,7 @@ class CustomAddImageForm(forms.ModelForm):
 class CustomImageForm(forms.ModelForm):
     class Meta:
         model = Image
-        fields = [
-            "name",
-            "image",
-            "owner",
-            "original_image_link",
-            "thumbnails_links"
-        ]
+        fields = ["name", "image", "owner", "original_image_link", "thumbnails_links"]
 
 
 class CustomInlineImageForm(forms.ModelForm):
