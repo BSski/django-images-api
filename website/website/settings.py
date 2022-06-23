@@ -26,14 +26,6 @@ if os.path.isfile(dotenv_file):
     load_dotenv(dotenv_file)
 
 
-# Custom user model configuration
-AUTH_USER_MODEL = "users.User"
-ACCOUNT_EMAIL_REQUIRED = False
-
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
@@ -225,6 +217,11 @@ if "CI" in os.environ:
 REST_USE_JWT = True
 JWT_AUTH_COOKIE = "images-api-auth"
 JWT_AUTH_REFRESH_COOKIE = "images-api-refresh-auth"
+
+
+# Custom user model configuration
+AUTH_USER_MODEL = "users.User"
+ACCOUNT_EMAIL_REQUIRED = False
 
 
 # Media configuration
