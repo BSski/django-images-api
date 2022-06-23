@@ -39,9 +39,7 @@ class ImageViewSet(viewsets.ModelViewSet):
         GetImagesUserBurstThrottle,
         GetImagesUserSustainedThrottle
     ]
-
     serializer_classes = {
-        'list': ImageSerializer,
         'create': AddImageSerializer
     }
     default_serializer_class = ImageSerializer  # Your default serializer

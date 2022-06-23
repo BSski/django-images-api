@@ -27,7 +27,7 @@ ADMIN_LOGIN_URL = os.environ.get("ADMIN_LOGIN_URL")
 urlpatterns = [
     path(f"{ADMIN_LOGIN_URL}/", admin.site.urls),
     path("auth/", include("dj_rest_auth.urls")),
-    path("images/", include("images.urls"), name="images_base"),
+    path("images/", include('images.urls')),
     path("", RedirectView.as_view(url='images', permanent=False), name='index'),
     # path('images/', include(('images.urls', 'images'), namespace="img")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

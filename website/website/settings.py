@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     "images",
     "storages",
     "django_cleanup.apps.CleanupConfig",
+    "django_extensions",
 ]
 
 MIDDLEWARE = [
@@ -97,12 +98,12 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_RATES": {
         'anonymous_burst_throttle': '8/hour',
         'anonymous_sustained_throttle': '20/day',
-        'original_img_link_burst_throttle': '2/hour',  # 20/hour
-        'original_img_link_sustained_throttle': '6/day',  # 60/day
-        'thumbnail_link_burst_throttle': '2/hour',  # 20/hour
-        'thumbnail_link_sustained_throttle': '8/day',  # 80/day
-        'post_image_user_burst_throttle': '2/hour',
-        'post_image_user_sustained_throttle': '15/day',
+        'original_img_link_burst_throttle': '20/hour',  # 20/hour
+        'original_img_link_sustained_throttle': '60/day',  # 60/day
+        'thumbnail_link_burst_throttle': '20/hour',  # 20/hour
+        'thumbnail_link_sustained_throttle': '80/day',  # 80/day
+        'post_image_user_burst_throttle': '15/hour',
+        'post_image_user_sustained_throttle': '50/day',
         'get_images_user_burst_throttle': '40/hour',
         'get_images_user_sustained_throttle': '150/day',
         'dj_rest_auth': '4/min'

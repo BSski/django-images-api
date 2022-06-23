@@ -10,7 +10,7 @@ from .views import (
 router = DefaultRouter()
 router.register("images", ImageViewSet, basename="images")
 
-
+app_name = 'images'
 urlpatterns = [
     path("", include(router.urls)),
     path(
