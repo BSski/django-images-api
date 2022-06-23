@@ -86,9 +86,6 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    user_tier = models.ForeignKey(
-        UserTier, on_delete=models.SET_NULL, null=True, related_name="users", default=3
-    )
     tier_settings_hash = models.CharField(max_length=1000, blank=True, null=True)
     username = models.CharField(max_length=30, unique=True)
     email = models.EmailField(max_length=250, unique=True)
@@ -103,6 +100,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     address = models.CharField(max_length=300, blank=True, null=True)
     city = models.CharField(max_length=100, blank=True, null=True)
     about_me = models.TextField(max_length=100, blank=True, null=True)
+    user_tier = models.ForeignKey(
+        UserTier, on_delete=models.SET_NULL, null=True, related_name="users", default=3
+    )
 
     objects = UserManager()
 
