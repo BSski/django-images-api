@@ -37,6 +37,8 @@ blocks:
         - name: Unit tests
           commands:
             - cd website
+            - python manage.py migrate --run-syncdb
+            - echo here0
             - python manage.py migrate
             - echo here1
             - python manage.py makemigrations users
