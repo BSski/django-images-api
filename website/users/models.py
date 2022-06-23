@@ -94,7 +94,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
-    date_joined = models.DateTimeField(default=timezone.now())
+    date_joined = models.DateTimeField(default=timezone.now)
     receive_newsletter = models.BooleanField(default=False)
     birth_date = models.DateField(blank=True, null=True)
     address = models.CharField(max_length=300, blank=True, null=True)

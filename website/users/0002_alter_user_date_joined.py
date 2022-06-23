@@ -12,11 +12,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='user',
-            name='date_joined',
-            field=models.DateTimeField(default=datetime.datetime(2022, 6, 23, 21, 20, 4, 504039, tzinfo=utc)),
-        ),
         migrations.CreateModel(
             name='User',
             fields=[
