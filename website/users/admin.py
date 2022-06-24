@@ -1,9 +1,10 @@
 from django.contrib import admin
-from users.models import User, UserTier
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
+
 from images.admin import ImageAdminInline
 from users.forms import CustomAddUserTierForm, CustomUserTierForm
+from users.models import User, UserTier
 
 
 @admin.register(User)

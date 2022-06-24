@@ -15,15 +15,14 @@ Including another URLconf
 """
 import os
 
-from django.contrib import admin
-from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib import admin
+from django.urls import include, path
 from django.views.generic.base import RedirectView
 
 
 ADMIN_LOGIN_URL = os.environ.get("ADMIN_LOGIN_URL")
-
 
 urlpatterns = [
     path(f"{ADMIN_LOGIN_URL}/", admin.site.urls),

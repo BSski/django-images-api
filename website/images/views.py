@@ -1,31 +1,35 @@
-from images.models import Image
-from images.serializers import ImageSerializer, AddImageSerializer
-from rest_framework import viewsets
-import boto3
 import json
+
+import boto3
+
+from django.core.exceptions import ValidationError
+
+from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, throttle_classes
 from rest_framework.pagination import LimitOffsetPagination
-from website import settings
-from django.core.exceptions import ValidationError
-from .decorators import (
+
+from images.decorators import (
     has_certain_thumbnail_size_permission,
     has_fetch_expiring_link_permission,
     has_use_original_image_link_permission,
 )
+from images.models import Image
+from images.serializers import AddImageSerializer, ImageSerializer
 from images.throttles import (
     AnonymousBurstThrottle,
     AnonymousSustainedThrottle,
-    OriginalImgLinkBurstThrottle,
-    OriginalImgLinkSustainedThrottle,
-    ThumbnailLinkBurstThrottle,
-    ThumbnailLinkSustainedThrottle,
-    PostImageUserBurstThrottle,
-    PostImageUserSustainedThrottle,
     GetImagesUserBurstThrottle,
     GetImagesUserSustainedThrottle,
+    OriginalImgLinkBurstThrottle,
+    OriginalImgLinkSustainedThrottle,
+    PostImageUserBurstThrottle,
+    PostImageUserSustainedThrottle,
+    ThumbnailLinkBurstThrottle,
+    ThumbnailLinkSustainedThrottle,
 )
+from website import settings
 
 
 class ImageViewSet(viewsets.ModelViewSet):
@@ -58,7 +62,9 @@ class ImageViewSet(viewsets.ModelViewSet):
         return Image.objects.filter(owner=user)
 
     def create(self, request, *args, **kwargs):
-        """Custom create method. Removes original image link from the returned data."""
+        """
+        Removes original image link from the returned data. Instead returns a message.
+        """
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)

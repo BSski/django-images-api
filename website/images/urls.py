@@ -1,9 +1,11 @@
 from django.urls import include, path
+
 from rest_framework.routers import DefaultRouter
+
 from images.views import (
-    ImageViewSet,
-    create_temp_thumbnail_link,
     create_temp_original_image_link,
+    create_temp_thumbnail_link,
+    ImageViewSet,
 )
 
 

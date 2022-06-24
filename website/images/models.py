@@ -1,10 +1,12 @@
-from django.db import models
-from users.models import User
-from django.core.validators import MinLengthValidator
-from images.validators import FileValidator
-from django.urls import reverse
 import os
 import uuid
+
+from django.core.validators import MinLengthValidator
+from django.db import models
+from django.urls import reverse
+
+from images.validators import FileValidator
+from users.models import User
 
 
 def content_file_name(instance, filename):
@@ -53,13 +55,15 @@ class Image(models.Model):
         if set(thumbnails_links.keys()) == unique_thumbnails_sizes:
             return thumbnails_links
         print("\n\n\n type:", type(file_name))
-        _get_link = lambda size: "{}{}".format(
-            os.environ.get(
-                "HOSTING_NAME",
-                "{}:{}".format("http://localhost", os.environ.get("PORT")),
-            ),
-            reverse("images:create_temp_thumbnail_link", args=[size, file_name]),
-        )
+
+        def _get_link(size):
+            return "{}{}".format(
+                os.environ.get(
+                    "HOSTING_NAME",
+                    "{}:{}".format("http://localhost", os.environ.get("PORT")),
+                ),
+                reverse("images:create_temp_thumbnail_link", args=[size, file_name]),
+            )
 
         new_thumbnails_links = {
             size: thumbnails_links.get(size, _get_link(size))

@@ -1,6 +1,7 @@
 from django.contrib import admin
+
+from images.forms import CustomAddImageForm, CustomImageForm, CustomInlineImageForm
 from images.models import Image
-from images.forms import CustomImageForm, CustomAddImageForm, CustomInlineImageForm
 
 
 class ImageAdminInline(admin.TabularInline):
