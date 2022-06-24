@@ -39,10 +39,12 @@ from images.utils import (
 from website import settings
 
 
-@api_view(['GET'])
+@api_view(["GET"])
 @permission_classes([AllowAny])
 def home(request):
-    return Response({'message': "Hi there! You're probably looking for /images endpoint."})
+    return Response(
+        {"message": "Hi there! You're probably looking for /images endpoint."}
+    )
 
 
 class ImageViewSet(viewsets.ModelViewSet):
