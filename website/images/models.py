@@ -76,8 +76,10 @@ class Image(models.Model):
             thumbnails_sizes, self.thumbnails_links, file_name
         )
 
-        self.original_image_link = "http://localhost:{}{}".format(
-            os.environ.get("PORT"),
+        self.original_image_link = "http://{}{}".format(
+            os.environ.get(
+                "HOSTING_NAME", "{}:{}".format("localhost", os.environ.get("PORT"))
+            ),
             reverse("images:create_temp_original_image_link", args=[file_name]),
         )
 
