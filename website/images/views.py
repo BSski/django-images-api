@@ -1,7 +1,5 @@
 import boto3
 
-from django.core.exceptions import ValidationError
-
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.response import Response
@@ -35,6 +33,7 @@ from images.utils import (
     get_temp_thumbnail_link,
     create_new_thumbnail,
     validate_thumbnail_size,
+    validate_time_exp,
 )
 from website import settings
 
@@ -116,7 +115,7 @@ def create_temp_thumbnail_link(
 ):
     """Creates a temporary link to a requested thumbnail size."""
     validation_status = validate_thumbnail_size(thumbnail_size)
-    if validation_status != "Success":
+    if validation_status != "OK":
         return validation_status
 
     time_exp = request.query_params.get("time_exp", None)
@@ -124,20 +123,9 @@ def create_temp_thumbnail_link(
         if not has_time_exp_permission:
             return Response({"status": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
 
-        if not time_exp.isnumeric():
-            return Response(
-                {
-                    "status": "Inappropriate argument type: time_exp has to be an integer"
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        if int(time_exp) < 300 or int(time_exp) > 30000:
-            return Response(
-                {
-                    "status": "Inappropriate value: time_exp is not between 300 and 30000"
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        time_exp_validation_status = validate_thumbnail_size(thumbnail_size)
+        if time_exp_validation_status != "OK":
+            return time_exp_validation_status
     else:
         time_exp = 120
 

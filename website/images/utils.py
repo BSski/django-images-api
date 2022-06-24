@@ -2,6 +2,9 @@ import json
 
 import boto3
 
+from rest_framework import status
+from rest_framework.response import Response
+
 from website import settings
 
 
@@ -59,4 +62,18 @@ def validate_thumbnail_size(thumbnail_size):
             {"status": "Inappropriate value: thumbnail size has to be an integer"},
             status=status.HTTP_400_BAD_REQUEST,
         )
-    return "Success"
+    return "OK"
+
+
+def validate_time_exp(time_exp):
+    if not time_exp.isnumeric():
+        return Response(
+            {"status": "Inappropriate argument type: time_exp has to be an integer"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    if int(time_exp) < 300 or int(time_exp) > 30000:
+        return Response(
+            {"status": "Inappropriate value: time_exp is not between 300 and 30000"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+    return "OK"
