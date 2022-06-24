@@ -3,8 +3,9 @@ import boto3
 from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, throttle_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.permissions import AllowAny
 
 from images.decorators import (
     has_certain_thumbnail_size_permission,
@@ -36,6 +37,12 @@ from images.utils import (
     validate_time_exp,
 )
 from website import settings
+
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def home(request):
+    return Response({'message': "Hi there! You're probably looking for /images endpoint."})
 
 
 class ImageViewSet(viewsets.ModelViewSet):
