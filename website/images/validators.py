@@ -7,6 +7,10 @@ from django.core.exceptions import ValidationError
 
 @deconstructible
 class FileValidator(object):
+    """
+    Validator for images. Used for validating image maximum size and its content type.
+    """
+
     error_messages = {
         "max_size": (
             "Ensure this file size is not greater than %(max_size)s."

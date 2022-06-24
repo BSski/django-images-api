@@ -3,6 +3,8 @@ from users.models import User
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """Simple serializer for User model."""
+
     class Meta:
         model = User
         fields = [
@@ -26,7 +28,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class UserDetailsSerializer(serializers.ModelSerializer):
-    """User model w/o password."""
+    """Simple serializer for User model w/o password."""
 
     class Meta:
         model = User

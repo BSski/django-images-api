@@ -51,7 +51,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
-    "rest_framework.authtoken",
     "dj_rest_auth",
     "users",
     "images",
@@ -59,6 +58,7 @@ INSTALLED_APPS = [
     "django_cleanup.apps.CleanupConfig",
     "django_extensions",
 ]
+
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -214,6 +214,7 @@ if "CI" in os.environ:
 
 
 # JWT configuration
+REST_AUTH_TOKEN_MODEL = None
 REST_USE_JWT = True
 JWT_AUTH_COOKIE = "images-api-auth"
 JWT_AUTH_REFRESH_COOKIE = "images-api-refresh-auth"

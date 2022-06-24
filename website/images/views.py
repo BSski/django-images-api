@@ -29,6 +29,8 @@ from images.throttles import (
 
 
 class ImageViewSet(viewsets.ModelViewSet):
+    """A viewset for Image model."""
+
     queryset = Image.objects.all()
     pagination_class = LimitOffsetPagination
     throttle_classes = [
@@ -43,12 +45,15 @@ class ImageViewSet(viewsets.ModelViewSet):
     default_serializer_class = ImageSerializer  # Your default serializer
 
     def get_serializer_class(self):
+        """Use a different serializer for posting new image through the form."""
         return self.serializer_classes.get(self.action, self.default_serializer_class)
 
     def perform_create(self, serializer):
+        """Add an owner to Image object if created through viewset's form."""
         serializer.save(owner=self.request.user)
 
     def get_queryset(self):
+        """List current user's images."""
         user = self.request.user
         return Image.objects.filter(owner=user)
 
@@ -58,6 +63,7 @@ class ImageViewSet(viewsets.ModelViewSet):
 @has_fetch_expiring_link_permission
 @has_certain_thumbnail_size_permission
 def create_temp_thumbnail_link(request, new_height, img_name, has_time_exp_permission):
+    """Creates a temporary link to a requested thumbnail size."""
     time_exp = request.query_params.get("time_exp", None)
     if time_exp:
         if not has_time_exp_permission:
@@ -122,6 +128,7 @@ def create_temp_thumbnail_link(request, new_height, img_name, has_time_exp_permi
 @throttle_classes([OriginalImgLinkBurstThrottle, OriginalImgLinkSustainedThrottle])
 @has_use_original_image_link_permission
 def create_temp_original_image_link(request, img_name):
+    """Creates a temporary link to the original version of the requested image."""
     s3_client = boto3.client(
         "s3",
         aws_access_key_id=settings.AWS_ACCESS_KEY_ID,

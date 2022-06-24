@@ -6,6 +6,8 @@ from hashids import Hashids
 
 
 class UserTier(models.Model):
+    """A model for the user tiers."""
+
     name = models.CharField(max_length=250)
     thumbnails_sizes = models.JSONField(default=dict)
     can_use_original_image_link = models.BooleanField(default=False)
@@ -16,6 +18,11 @@ class UserTier(models.Model):
         return f"{self.id}. {self.name}"
 
     def save(self, *args, **kwargs):
+        """
+        Custom save method. Generates a hash basing on current thumbnail sizes and
+        checks whether they were changed in the current edit action. If they did,
+        it updates the sizes links of all Users who are in this UserTier.
+        """
         hashids = Hashids()
         hashed_settings = hashids.encode(*(*self.thumbnails_sizes.get("sizes", []),))
         settings_changed = self.settings_hash != hashed_settings
@@ -30,6 +37,8 @@ class UserTier(models.Model):
 
 
 class UserManager(BaseUserManager):
+    """A manager for the custom user model."""
+
     def _create_user(
         self,
         username,
@@ -82,6 +91,8 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
+    """A custom User model."""
+
     user_tier = models.ForeignKey(
         UserTier, on_delete=models.SET_NULL, null=True, related_name="users", default=3
     )
@@ -93,6 +104,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    is_readonly_superuser = models.BooleanField(default=False)
     date_joined = models.DateTimeField(default=timezone.now)
     receive_newsletter = models.BooleanField(default=False)
     birth_date = models.DateField(blank=True, null=True)
@@ -109,13 +121,19 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.username
 
     def _update_images(self):
+        """Update all images' thumbnails links."""
         for image in self.images.all():
             image.update_thumbnails(self.user_tier.thumbnails_sizes.get("sizes"))
 
     def _update_tier_settings_hash(self):
+        """Update settings hash of this user's UserTier."""
         self.tier_settings_hash = self.user_tier.settings_hash
 
     def save(self, *args, **kwargs):
+        """
+        Custom save method. Checks whether this user's UserTier changed via checking its
+        settings hash. If it did, updates its images thumbnails links.
+        """
         tier_changed = self.tier_settings_hash != self.user_tier.settings_hash
         self._update_tier_settings_hash()
         if tier_changed:
