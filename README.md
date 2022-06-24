@@ -10,10 +10,10 @@
 
 
 [![Build Status](https://bsski.semaphoreci.com/badges/DjangoMusic/branches/main.svg?style=shields&key=db2ffdf5-30e8-46f6-83af-6960beb104fc)](https://bsski.semaphoreci.com/projects/DjangoMusic)
-[![Demo Uptime](https://img.shields.io/uptimerobot/ratio/7/m791970415-adc4bd6d2b370b6f9fdce35f)](https://django-music-bsski.herokuapp.com/)
-[![Heroku](https://pyheroku-badge.herokuapp.com/?app=django-music-bsski&style=flat)](https://django-music-bsski.herokuapp.com/)
-[![Maintainability](https://api.codeclimate.com/v1/badges/b72dd7a07942d939db01/maintainability)](https://codeclimate.com/github/BSski/DjangoMusic/maintainability)
 
+[![Demo Uptime](https://img.shields.io/uptimerobot/ratio/7/m792080634-601b784c89ee78a144c83275)](https://django-music-bsski.herokuapp.com/)
+[![Heroku](https://pyheroku-badge.herokuapp.com/?app=django-images-api-bsski&style=flat)](https://django-images-api-bsski.herokuapp.com/)
+[![Maintainability](https://api.codeclimate.com/v1/badges/a84055e6e49ddb02653e/maintainability)](https://codeclimate.com/github/BSski/DjangoImagesAPI/maintainability)
 [![CodeFactor](https://www.codefactor.io/repository/github/bsski/djangoimagesapi/badge)](https://www.codefactor.io/repository/github/bsski/djangoimagesapi)
 
 [![codecov](https://codecov.io/gh/BSski/DjangoMusic/branch/main/graph/badge.svg?token=Y21Z7RMYJL)](https://codecov.io/gh/BSski/DjangoMusic)

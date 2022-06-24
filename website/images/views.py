@@ -31,7 +31,7 @@ from images.utils import (
     get_s3_client,
     get_s3_objects,
     get_temp_thumbnail_link,
-    create_new_thumbnail
+    create_new_thumbnail,
 )
 from website import settings
 
@@ -80,8 +80,6 @@ class ImageViewSet(viewsets.ModelViewSet):
         )
 
 
-
-
 @api_view(["GET"])
 @throttle_classes([ThumbnailLinkBurstThrottle, ThumbnailLinkSustainedThrottle])
 @has_fetch_expiring_link_permission
@@ -108,7 +106,9 @@ def create_temp_thumbnail_link(request, new_height, img_name, has_time_exp_permi
     s3_objects = get_s3_objects(s3_client)
 
     img_path = f"images/{new_height}_{img_name}"
-    file_exists_in_s3 = "Contents" in s3_objects and any(dictionary["Key"] == img_path for dictionary in s3_objects["Contents"])
+    file_exists_in_s3 = "Contents" in s3_objects and any(
+        dictionary["Key"] == img_path for dictionary in s3_objects["Contents"]
+    )
 
     if not file_exists_in_s3:
         create_new_thumbnail(new_height, img_name)

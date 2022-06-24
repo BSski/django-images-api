@@ -30,9 +30,7 @@ def get_temp_thumbnail_link(s3_client, new_height, img_name, time_exp):
 
 
 def get_s3_objects(s3_client):
-    return s3_client.list_objects_v2(
-        Bucket=settings.AWS_THUMBNAILS_STORAGE_BUCKET_NAME
-    )
+    return s3_client.list_objects_v2(Bucket=settings.AWS_THUMBNAILS_STORAGE_BUCKET_NAME)
 
 
 def create_new_thumbnail(new_height, img_name):
