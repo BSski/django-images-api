@@ -30,7 +30,7 @@ class ImageAdmin(admin.ModelAdmin):
         defaults = {}
         if obj is None:
             defaults["form"] = self.add_form
-        defaults |= kwargs
+        defaults = {**defaults, **kwargs}
         return super().get_form(request, obj, **defaults)
 
     def get_readonly_fields(self, request, obj=None):
