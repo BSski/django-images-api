@@ -39,6 +39,7 @@ class Image(models.Model):
         return f'{self.id}, {self.owner}: "{self.name}"'
 
     def update_thumbnails(self, thumbnails_sizes):
+        ext = self.image.name.split(".")[-1]
         file_name = f"{self.owner.id}_{self.file_uuid}.{ext}"
         self.thumbnails_links = self._create_thumbnails_links(
             thumbnails_sizes, self.thumbnails_links, file_name
