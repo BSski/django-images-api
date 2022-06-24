@@ -16,7 +16,7 @@ app_name = "images"
 urlpatterns = [
     path("", include(router.urls)),
     path(
-        "thumbnails/<str:new_height>/<str:img_name>/",
+        "thumbnails/<str:thumbnail_size>/<str:img_name>/",
         create_temp_thumbnail_link,
         name="create_temp_thumbnail_link",
     ),

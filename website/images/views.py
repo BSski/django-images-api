@@ -12,6 +12,8 @@ from images.decorators import (
     has_certain_thumbnail_size_permission,
     has_fetch_expiring_link_permission,
     has_use_original_image_link_permission,
+    is_correct_user_for_original_image,
+    is_correct_user_for_thumbnail,
 )
 from images.models import Image
 from images.serializers import AddImageSerializer, ImageSerializer
@@ -32,6 +34,7 @@ from images.utils import (
     get_s3_objects,
     get_temp_thumbnail_link,
     create_new_thumbnail,
+    validate_thumbnail_size,
 )
 from website import settings
 
@@ -81,45 +84,9 @@ class ImageViewSet(viewsets.ModelViewSet):
 
 
 @api_view(["GET"])
-@throttle_classes([ThumbnailLinkBurstThrottle, ThumbnailLinkSustainedThrottle])
-@has_fetch_expiring_link_permission
-@has_certain_thumbnail_size_permission
-def create_temp_thumbnail_link(request, new_height, img_name, has_time_exp_permission):
-    """Creates a temporary link to a requested thumbnail size."""
-    time_exp = request.query_params.get("time_exp", None)
-    if time_exp:
-        if not has_time_exp_permission:
-            return Response({"status": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
-
-        if not time_exp.isnumeric():
-            raise ValidationError(
-                "Inappropriate argument type: time_exp has to be an integer"
-            )
-        if int(time_exp) < 300 or int(time_exp) > 30000:
-            raise ValidationError(
-                "Inappropriate value: time_exp is not between 300 and 30000"
-            )
-    else:
-        time_exp = 120
-
-    s3_client = get_s3_client()
-    s3_objects = get_s3_objects(s3_client)
-
-    img_path = f"images/{new_height}_{img_name}"
-    file_exists_in_s3 = "Contents" in s3_objects and any(
-        dictionary["Key"] == img_path for dictionary in s3_objects["Contents"]
-    )
-
-    if not file_exists_in_s3:
-        create_new_thumbnail(new_height, img_name)
-
-    temp_url = get_temp_thumbnail_link(s3_client, new_height, img_name, time_exp)
-    return Response({"thumbnail_temporary_link": temp_url})
-
-
-@api_view(["GET"])
 @throttle_classes([OriginalImgLinkBurstThrottle, OriginalImgLinkSustainedThrottle])
 @has_use_original_image_link_permission
+@is_correct_user_for_original_image
 def create_temp_original_image_link(request, img_name):
     """Creates a temporary link to the original version of the requested image."""
     s3_client = boto3.client(
@@ -137,3 +104,51 @@ def create_temp_original_image_link(request, img_name):
         ExpiresIn=1800,
     )
     return Response({"original_image_temporary_link": temp_url})
+
+
+@api_view(["GET"])
+@throttle_classes([ThumbnailLinkBurstThrottle, ThumbnailLinkSustainedThrottle])
+@has_fetch_expiring_link_permission
+@has_certain_thumbnail_size_permission
+@is_correct_user_for_thumbnail
+def create_temp_thumbnail_link(
+    request, thumbnail_size, img_name, has_time_exp_permission
+):
+    """Creates a temporary link to a requested thumbnail size."""
+    validation_status = validate_thumbnail_size(thumbnail_size)
+    if validation_status != "Success":
+        return validation_status
+
+    time_exp = request.query_params.get("time_exp", None)
+    if time_exp:
+        if not has_time_exp_permission:
+            return Response({"status": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
+
+        if not time_exp.isnumeric():
+            return Response(
+                {
+                    "status": "Inappropriate argument type: time_exp has to be an integer"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if int(time_exp) < 300 or int(time_exp) > 30000:
+            return Response(
+                {
+                    "status": "Inappropriate value: time_exp is not between 300 and 30000"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+    else:
+        time_exp = 120
+
+    s3_client = get_s3_client()
+    s3_objects = get_s3_objects(s3_client)
+
+    img_path = f"images/{thumbnail_size}_{img_name}"
+    file_exists_in_s3 = "Contents" in s3_objects and any(
+        dictionary["Key"] == img_path for dictionary in s3_objects["Contents"]
+    )
+    if not file_exists_in_s3:
+        create_new_thumbnail(thumbnail_size, img_name)
+    temp_url = get_temp_thumbnail_link(s3_client, thumbnail_size, img_name, time_exp)
+    return Response({"thumbnail_temporary_link": temp_url})

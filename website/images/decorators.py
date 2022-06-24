@@ -4,6 +4,53 @@ from rest_framework import status
 from rest_framework.response import Response
 
 
+def validate_thumbnail_size(func):
+    """Check whether the requesting user is the one who the image belongs to."""
+
+    @functools.wraps(func)
+    def wrapper_validate_thumbnail_size(
+        request, thumbnail_size, img_name, has_time_exp_permission, *args, **kwargs
+    ):
+        if not thumbnail_size.isnumeric():
+            return Response(
+                {"status": "Inappropriate value: thumbnail size has to be an integer"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        return func(
+            request, thumbnail_size, img_name, has_time_exp_permission, *args, **kwargs
+        )
+
+    return wrapper_validate_thumbnail_size
+
+
+def is_correct_user_for_thumbnail(func):
+    """Check whether the requesting user is the one who the image belongs to."""
+
+    @functools.wraps(func)
+    def wrapper_is_correct_user(
+        request, thumbnail_size, img_name, has_time_exp_permission, *args, **kwargs
+    ):
+        if request.user.id != int(img_name.split("_")[0]):
+            return Response({"status": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
+        return func(
+            request, thumbnail_size, img_name, has_time_exp_permission, *args, **kwargs
+        )
+
+    return wrapper_is_correct_user
+
+
+def is_correct_user_for_original_image(func):
+    """Check whether the requesting user is the one who the image belongs to."""
+
+    @functools.wraps(func)
+    def wrapper_is_correct_user(request, img_name, *args, **kwargs):
+        if request.user.id != int(img_name.split("_")[0]):
+            return Response({"status": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
+        return func(request, img_name, *args, **kwargs)
+
+    return wrapper_is_correct_user
+
+
 def has_certain_thumbnail_size_permission(func):
     """
     Check whether the requesting user is permitted to get a link to a thumbnail of the
@@ -11,11 +58,11 @@ def has_certain_thumbnail_size_permission(func):
     """
 
     @functools.wraps(func)
-    def wrapper_has_thumbnail_permission(request, new_height, *args, **kwargs):
-        if int(new_height) not in request.user.user_tier.thumbnails_sizes["sizes"]:
+    def wrapper_has_thumbnail_permission(request, thumbnail_size, *args, **kwargs):
+        if int(thumbnail_size) not in request.user.user_tier.thumbnails_sizes["sizes"]:
             return Response({"status": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
-        func(request, new_height, *args, **kwargs)
-        return func(request, new_height, *args, **kwargs)
+        func(request, thumbnail_size, *args, **kwargs)
+        return func(request, thumbnail_size, *args, **kwargs)
 
     return wrapper_has_thumbnail_permission
 
@@ -28,12 +75,14 @@ def has_fetch_expiring_link_permission(func):
 
     @functools.wraps(func)
     def wrapper_has_fetch_expiring_link_permission(
-        request, new_height, img_name, *args, **kwargs
+        request, thumbnail_size, img_name, *args, **kwargs
     ):
         has_time_exp_permission = bool(request.user.user_tier.can_fetch_expiring_link)
-        func(request, new_height, img_name, has_time_exp_permission, *args, **kwargs)
+        func(
+            request, thumbnail_size, img_name, has_time_exp_permission, *args, **kwargs
+        )
         return func(
-            request, new_height, img_name, has_time_exp_permission, *args, **kwargs
+            request, thumbnail_size, img_name, has_time_exp_permission, *args, **kwargs
         )
 
     return wrapper_has_fetch_expiring_link_permission
@@ -48,7 +97,6 @@ def has_use_original_image_link_permission(func):
     def wrapper_has_use_original_image_link_permission(request, *args, **kwargs):
         if not request.user.user_tier.can_use_original_image_link:
             return Response({"status": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
-        func(request, *args, **kwargs)
         return func(request, *args, **kwargs)
 
     return wrapper_has_use_original_image_link_permission
