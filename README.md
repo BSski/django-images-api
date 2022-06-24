@@ -1,7 +1,4 @@
-﻿﻿
-# temporary copied readme
-
-<p align="center">
+﻿<p align="center">
   <h2 align="center">DjangoImagesAPI</h2>
 </p>
 
@@ -15,7 +12,6 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/a84055e6e49ddb02653e/maintainability)](https://codeclimate.com/github/BSski/DjangoImagesAPI/maintainability)
 [![CodeFactor](https://www.codefactor.io/repository/github/bsski/djangoimagesapi/badge)](https://www.codefactor.io/repository/github/bsski/djangoimagesapi)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![codecov](https://codecov.io/gh/BSski/DjangoMusic/branch/main/graph/badge.svg?token=Y21Z7RMYJL)](https://codecov.io/gh/BSski/DjangoMusic)
 </div>
 
 
@@ -63,12 +59,17 @@ with dockerization and deployment from a container to Heroku.
 
 
 ## :hammer: Technologies used
-- Python 3.9.12
-- Django 4.0.5
+- Python 3.7 & 3.8
+- Django 3.2
+- Django REST Framework 3.13.1
+- PostgreSQL 14.2
+- AWS S3
+- AWS Lambda
 - Gunicorn 20.1.0
 - Docker
 - SemaphoreCI
 - Heroku
+- dj-rest-auth with JWT Token
 
 
 ## :hammer_and_wrench: Deployment
@@ -94,12 +95,20 @@ Security through obscurity is not enough of course, but I find it a nice complem
 
 To run this project, you have to set up the following environment variables in the `.env` file (**the values below are exemplary**):
 ```
+SECRET_KEY=TestSecretKey
+AWS_S3_REGION_NAME=eu-central-1
+AWS_S3_ADDRESSING_STYLE=virtal
+AWS_S3_SIGNATURE_VERSION=s3v4
+AWS_ACCESS_KEY_ID=MFAA21AFHG9AFKA2AEY
+AWS_SECRET_ACCESS_KEY=13Fjm32eam23k23Qf432fDFda9saf
+AWS_STORAGE_BUCKET_NAME=main-bucket
+AWS_THUMBNAILS_STORAGE_BUCKET_NAME=thumbnails-bucket
+DEFAULT_FILE_STORAGE=storages.backends.s3boto3.S3Boto3Storage
+PORT=8020
+ADMIN_LOGIN_URL=test_admin_login_url
 DJANGO_SUPERUSER_PASSWORD=TestAdminPassword
 DJANGO_SUPERUSER_USERNAME=TestAdminName
 DJANGO_SUPERUSER_EMAIL=TestAdmin@email.com
-SECRET_KEY=TestSecretKey
-ADMIN_LOGIN_URL=test_admin_login_url
-PORT=8020
 ```
 
 
@@ -115,8 +124,12 @@ Furthermore, the website is deployed on Heroku from a Docker image using a CI/CD
 
 ## :arrow_up: Room for improvement
 
-Room for improvement:
-- QoL features in admin panel could be added, for example sorting.
+Due to time limitation there are very important things left to add:
+- Localstack to test and run app locally,
+- tests,
+- CI/CD: working dockerization and deployment to heroku,
+- typehints,
+- the code would also benefit from some cleaning.
 
 
 ## :construction_worker: Author
