@@ -79,7 +79,7 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "USER_DETAILS_SERIALIZER": "users.serializers.UserDetailsSerializer",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
-    "PAGE_SIZE": 2,
+    "PAGE_SIZE": 5,
     "DEFAULT_THROTTLE_CLASSES": (
         "images.throttles.AnonymousBurstThrottle",
         "images.throttles.AnonymousSustainedThrottle",

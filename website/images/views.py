@@ -57,6 +57,18 @@ class ImageViewSet(viewsets.ModelViewSet):
         user = self.request.user
         return Image.objects.filter(owner=user)
 
+    def create(self, request, *args, **kwargs):
+        """Custom create method. Removes original image link from the returned data."""
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(
+            {"status": "Successfully posted"},
+            status=status.HTTP_201_CREATED,
+            headers=headers,
+        )
+
 
 @api_view(["GET"])
 @throttle_classes([ThumbnailLinkBurstThrottle, ThumbnailLinkSustainedThrottle])

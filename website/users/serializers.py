@@ -2,7 +2,7 @@ from rest_framework import serializers
 from users.models import User
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UsersDetailSerializer(serializers.ModelSerializer):
     """Simple serializer for User model."""
 
     class Meta:
@@ -10,38 +10,21 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "user_tier",
-            "email",
+            "tier_settings_hash",
             "username",
+            "email",
             "first_name",
             "last_name",
             "address",
             "city",
             "about_me",
             "birth_date",
+            "date_joined",
+            "last_login",
             "is_active",
             "is_staff",
             "is_superuser",
-            "last_login",
-            "date_joined",
+            "is_readonly_superuser",
+            "receive_newsletter",
         ]
         depth = 1
-
-
-class UserDetailsSerializer(serializers.ModelSerializer):
-    """Simple serializer for User model w/o password."""
-
-    class Meta:
-        model = User
-        fields = (
-            "pk",
-            "username",
-            "email",
-            "first_name",
-            "last_name",
-            "address",
-            "is_staff",
-            "city",
-            "about_me",
-            "profile_image",
-        )
-        read_only_fields = ("username",)

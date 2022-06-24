@@ -24,10 +24,12 @@ from django.views.generic.base import RedirectView
 
 ADMIN_LOGIN_URL = os.environ.get("ADMIN_LOGIN_URL")
 
+
 urlpatterns = [
     path(f"{ADMIN_LOGIN_URL}/", admin.site.urls),
     path("auth/", include("dj_rest_auth.urls")),
     path("images/", include("images.urls")),
+    path("users/", include("users.urls"), name="users"),
     path("", RedirectView.as_view(url="images", permanent=False), name="index"),
     # path('images/', include(('images.urls', 'images'), namespace="img")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

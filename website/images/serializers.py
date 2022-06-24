@@ -5,9 +5,14 @@ from images.models import Image
 class ImageSerializer(serializers.ModelSerializer):
     """Simple serializer for Image model."""
 
+    owner = serializers.HyperlinkedRelatedField(
+        view_name="users:detail", read_only=True
+    )
+
     class Meta:
         model = Image
         fields = [
+            "id",
             "file_uuid",
             "name",
             "image",
@@ -15,7 +20,6 @@ class ImageSerializer(serializers.ModelSerializer):
             "thumbnails_links",
             "owner",
         ]
-        depth = 2
 
 
 class AddImageSerializer(serializers.ModelSerializer):
