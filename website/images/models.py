@@ -39,8 +39,9 @@ class Image(models.Model):
         return f'{self.id}, {self.owner}: "{self.name}"'
 
     def update_thumbnails(self, thumbnails_sizes):
+        file_name = f"{self.owner.id}_{self.file_uuid}.{ext}"
         self.thumbnails_links = self._create_thumbnails_links(
-            thumbnails_sizes, self.thumbnails_links
+            thumbnails_sizes, self.thumbnails_links, file_name
         )
         super().save()
 
@@ -76,9 +77,9 @@ class Image(models.Model):
             thumbnails_sizes, self.thumbnails_links, file_name
         )
 
-        self.original_image_link = "http://{}{}".format(
+        self.original_image_link = "{}{}".format(
             os.environ.get(
-                "HOSTING_NAME", "{}:{}".format("localhost", os.environ.get("PORT"))
+                "HOSTING_NAME", "{}:{}".format("http://localhost", os.environ.get("PORT"))
             ),
             reverse("images:create_temp_original_image_link", args=[file_name]),
         )
