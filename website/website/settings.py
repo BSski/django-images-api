@@ -216,7 +216,7 @@ if "CI" in os.environ:
 
 
 # JWT configuration
-REST_AUTH_TOKEN_MODEL = None
+#REST_AUTH_TOKEN_MODEL = None
 REST_USE_JWT = True
 JWT_AUTH_COOKIE = "images-api-auth"
 JWT_AUTH_REFRESH_COOKIE = "images-api-refresh-auth"
@@ -246,12 +246,4 @@ DEFAULT_FILE_STORAGE = os.environ.get("DEFAULT_FILE_STORAGE")
 AWS_S3_FILE_OVERWRITE = True
 
 
-###############################################################
-###############################################################
-###############################################################
-###############################################################
-DEBUG_PROPAGATE_EXCEPTIONS = True
-###############################################################
-###############################################################
-###############################################################
-###############################################################
+DEBUG_PROPAGATE_EXCEPTIONS = True  # just for now, work in progress

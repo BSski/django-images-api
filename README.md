@@ -127,7 +127,6 @@ Furthermore, the website is deployed on Heroku from a Docker image using a CI/CD
 Due to time limitation there are very important things left to add:
 - Localstack to test and run app locally,
 - tests,
-- CI/CD: working dockerization and deployment to heroku,
 - typehints,
 - the code would also benefit from some cleaning.
 

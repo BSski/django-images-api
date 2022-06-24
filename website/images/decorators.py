@@ -4,25 +4,6 @@ from rest_framework import status
 from rest_framework.response import Response
 
 
-def validate_thumbnail_size(func):
-    """Check whether the requesting user is the one who the image belongs to."""
-
-    @functools.wraps(func)
-    def wrapper_validate_thumbnail_size(
-        request, thumbnail_size, img_name, has_time_exp_permission, *args, **kwargs
-    ):
-        if not thumbnail_size.isnumeric():
-            return Response(
-                {"status": "Inappropriate value: thumbnail size has to be an integer"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        return func(
-            request, thumbnail_size, img_name, has_time_exp_permission, *args, **kwargs
-        )
-
-    return wrapper_validate_thumbnail_size
-
-
 def is_correct_user_for_thumbnail(func):
     """Check whether the requesting user is the one who the image belongs to."""
 
