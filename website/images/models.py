@@ -54,7 +54,6 @@ class Image(models.Model):
         unique_thumbnails_sizes = set(map(str, thumbnails_sizes))
         if set(thumbnails_links.keys()) == unique_thumbnails_sizes:
             return thumbnails_links
-        print("\n\n\n type:", type(file_name))
 
         def _get_link(size):
             return "{}{}".format(
