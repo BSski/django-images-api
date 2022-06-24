@@ -56,8 +56,11 @@ class Image(models.Model):
         if set(thumbnails_links.keys()) == unique_thumbnails_sizes:
             return thumbnails_links
         print("\n\n\n type:", type(file_name))
-        get_link = lambda size: "http://localhost:{}{}".format(
-            os.environ.get("PORT"),
+        get_link = lambda size: "{}{}".format(
+            os.environ.get(
+                "HOSTING_NAME",
+                "{}:{}".format("http://localhost", os.environ.get("PORT"))
+            ),
             reverse("images:create_temp_thumbnail_link", args=[size, file_name]),
         )
 
