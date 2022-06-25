@@ -9,7 +9,6 @@
 [![Build Status](https://bsski.semaphoreci.com/badges/DjangoImagesAPI/branches/main.svg?style=shields&key=0adba4be-b67c-416d-802b-90f43f19ff0f)](https://bsski.semaphoreci.com/projects/DjangoImagesAPI)
 [![Demo Uptime](https://img.shields.io/uptimerobot/ratio/7/m792080634-601b784c89ee78a144c83275)](https://django-music-bsski.herokuapp.com/)
 [![Heroku](https://pyheroku-badge.herokuapp.com/?app=django-images-api-bsski&style=flat)](https://django-images-api-bsski.herokuapp.com/)
-[![Maintainability](https://api.codeclimate.com/v1/badges/a84055e6e49ddb02653e/maintainability)](https://codeclimate.com/github/BSski/DjangoImagesAPI/maintainability)
 [![CodeFactor](https://www.codefactor.io/repository/github/bsski/djangoimagesapi/badge)](https://www.codefactor.io/repository/github/bsski/djangoimagesapi)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 </div>
@@ -34,11 +33,9 @@ https://django-images-api-bsski.herokuapp.com/auth/login
 
 
 
-
 ## Table of contents
 * [Project description](#scroll-project-description)
 * [Technologies used](#hammer-technologies-used)
-* [Deployment](#hammer_and_wrench-deployment)
 * [Environment variables](#closed_lock_with_key-environment-variables)
 * [Main features](#rocket-main-features)
 * [Room for improvement](#arrow_up-room-for-improvement)
@@ -48,7 +45,7 @@ https://django-images-api-bsski.herokuapp.com/auth/login
 ## :scroll: Project description
 This is a recruitment task for a Junior Python Developer position.
 
-Current project:
+The project:
 - is an Images API,
 - where users can list their images,
 - with 3 builtin user tiers with options to:
@@ -70,9 +67,7 @@ Current project:
 - the code has docstrings,
 - and it's easily deployable via docker, but you need your own AWS architecture (Localstack will be added soon),
 - there is a CI/CD pipeline which would run tests if I wrote them, it runs black linter check, dockerizes the project and deploys it to Heroku from the Docker container,
-- and there are authentication and authorization mechanisms.
-
-
+- there are authentication and authorization mechanisms: user's JWT token is saved as cookie, but it can also be passed in requests as a bearer token.
 
 
 ## :hammer: Technologies used
@@ -89,23 +84,36 @@ Current project:
 - dj-rest-auth with JWT Token
 
 
-## :hammer_and_wrench: Deployment
+[//]: # (## :hammer_and_wrench: Deployment)
 
-A) through Docker:
-1. Create an `.env` file basing on `.env_sample_file` from the repository.
-2. Run `docker run --env-file .env -p 8020:8020 bsski/django-music:latest` in the `.env` file directory.
-3. Access `localhost:8020`. 
+[//]: # ()
+[//]: # (A&#41; through Docker:)
 
-B) without Docker:
-1. Download the repository.
-2. Create a virtual environment.
-3. Run `pip install -r requirements.txt` in the directory of `requirements.txt`.
-4. Create an `.env` file basing on `.env_sample_file` from the repository in the directory of `.env_sample_file`.
-5. Run `python manage.py runserver --noreload` in the directory of `manage.py`.
-6. Access `127.0.0.1:8000`.
+[//]: # (1. Create an `.env` file basing on `.env_sample_file` from the repository.)
 
-The admin panel can be found under your chosen URL or, if you didn't set it in the .env file, the default `/hidden_admin_url`.
-Security through obscurity is not enough of course, but I find it a nice complementary solution.
+[//]: # (2. Run `docker run --env-file .env -p 8020:8020 bsski/django-music:latest` in the `.env` file directory.)
+
+[//]: # (3. Access `localhost:8020`. )
+
+[//]: # ()
+[//]: # (B&#41; without Docker:)
+
+[//]: # (1. Download the repository.)
+
+[//]: # (2. Create a virtual environment.)
+
+[//]: # (3. Run `pip install -r requirements.txt` in the directory of `requirements.txt`.)
+
+[//]: # (4. Create an `.env` file basing on `.env_sample_file` from the repository in the directory of `.env_sample_file`.)
+
+[//]: # (5. Run `python manage.py runserver --noreload` in the directory of `manage.py`.)
+
+[//]: # (6. Access `127.0.0.1:8000`.)
+
+[//]: # ()
+[//]: # (The admin panel can be found under your chosen URL or, if you didn't set it in the .env file, the default `/hidden_admin_url`.)
+
+[//]: # (Security through obscurity is not enough of course, but I find it a nice complementary solution.)
 
 
 ## :closed_lock_with_key: Environment variables
@@ -132,12 +140,11 @@ DJANGO_SUPERUSER_EMAIL=TestAdmin@email.com
 ## :rocket: Main features
 
 The recruitment task demanded such features and all are provided in a required format:
-- accessing `/books` displays all stored books,
-- accessing `/books?published_date=<year>` displays stored books published in a certain year,
-- accessing `/books?sort=-published_date` displays all stored books sorted by published date in descending order,
-- accessing `/books?author=<author1>&author=<author2>` displays all stored books written by _author1_ and all stored books written by _author2_,
-- accessing `/books/<book_id>` displays details of a single book of id _book_id_,
-- sending a POST request to `/db` with a `q` keyword adds 10 books to the API's database; the books come from a query sent to the Google Books API with the passed keyword and the operation will update existing books if there are such.
+- sending a POST request to `/auth/login/` lets you log in,
+- sending a POST request to `/auth/logout/` lets you log out,
+- accessing `/images/images/` when logged in lists current user's images,
+- accessing 'images/images/' when logged in with `?limit=3` at the end of it sets a pagination for the current page,
+- accessing thumbnail link from image view with `?time_exp=500` at the end of it generates a link to it expiring in 500 seconds (if logged in user is permitted to do that).
 
 
 Furthermore, the website is deployed on Heroku from a Docker image using a CI/CD SemaphoreCI pipeline:

@@ -43,7 +43,9 @@ from website import settings
 @permission_classes([AllowAny])
 def home(request):
     return Response(
-        {"message": "Hi there! You're probably looking for /images endpoint."}
+        {
+            "message": "Hi there! You're probably looking for /auth/login/ and /images/ endpoints."
+        }
     )
 
 
