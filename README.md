@@ -48,7 +48,7 @@ This is a recruitment task for a Junior Python Developer position.
 The project:
 - is an Images API,
 - where users can list their images,
-- with 3 builtin user tiers (Basic, Premium, Enterprise) with varying permissions to:
+- <a href="https://github.com/BSski/DjangoImagesAPI/blob/development/website/fixtures.json">with 3 main built-in user tiers (Basic, Premium, Enterprise) with varying permissions </a> to:
     - fetch a link to a permitted thumbnail size,
     - fetch an expiring link to a permitted thumbnail size (300-30000 sec),
     - fetch a link to the original image,
