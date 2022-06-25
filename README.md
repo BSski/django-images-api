@@ -48,9 +48,9 @@ This is a recruitment task for a Junior Python Developer position.
 The project:
 - is an Images API,
 - where users can list their images,
-- with 3 builtin user tiers with options to:
+- with 3 builtin user tiers (Basic, Premium, Enterprise) with varying permissions to:
     - fetch a link to a permitted thumbnail size,
-    - specify the time the link is supposed to be valid for,
+    - fetch an expiring link to a permitted thumbnail size (300-30000 sec),
     - fetch a link to the original image,
 - where user tiers with arbitrary permissions can be created via admin panel,
 - and if a user tier settings change, all its users are updated, and so are their images,
