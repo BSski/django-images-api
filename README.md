@@ -20,11 +20,16 @@
 </h3>
 
 <p align="center">
-  https://django-music-bsski.herokuapp.com/
+  https://django-images-api-bsski.herokuapp.com/
 </p>
 
 <p align="center">
-Live demo's admin credentials are available upon request.
+Read-only admin and test users credentials are available upon request.
+</p>
+
+<p align="center">
+Login page URL:<br>
+https://django-images-api-bsski.herokuapp.com/auth/login
 </p>
 
 
@@ -35,37 +40,49 @@ Live demo's admin credentials are available upon request.
 * [Technologies used](#hammer-technologies-used)
 * [Deployment](#hammer_and_wrench-deployment)
 * [Environment variables](#closed_lock_with_key-environment-variables)
-* [Features](#rocket-features)
+* [Main features](#rocket-main-features)
 * [Room for improvement](#arrow_up-room-for-improvement)
 * [Author](#construction_worker-author)
 
 
 ## :scroll: Project description
-This is a recruitment task for a Junior Python Developer position. The task was simple:
-to create a Django admin-panel-only website, with two models (Author, Song) with a
-many-to-many relationship between them, along with viewing and creating instances of
-those models in the admin panel.
+This is a recruitment task for a Junior Python Developer position.
 
-The database choice was arbitrary, but with a recommendation of an in-memory version.
-While I believe it would make the task easier in for example Java's Spring, in Django it
-doesn't. I decided to take the challenge and try to run Django with an in-memory database
-only, and I succeeded. Every time the server is shut down, created model instances are
-wiped. Every time the server is started, migrations are run and the admin account is
-created automatically. I do realise that it is a nonstandard solution, but I still wanted
-to try that, since the rest of the task was straightforward.
+Current project:
+- is an Images API,
+- where users can list their images,
+- with 3 builtin user tiers with options to:
+    - fetch a link to a permitted thumbnail size,
+    - specify the time the link is supposed to be valid for,
+    - fetch a link to the original image,
+- where user tiers with arbitrary permissions can be created via admin panel,
+- and if a user tier settings change, all its users are updated, and so are their images,
+- and if a user's user tier changes, his images get updated,
+- and if an images owner changed, its thumbnail links are updated,
+- user inputted data is validated,
+- project's design and architecture was created with performance in mind:
+    - only original user's images are stored permanently: thumbnails are stored in a S3 bucket which deletes files that were not accessed for 7 days,
+    - thumbnail is generated only when requested, by AWS Lambda function,
+    - JWT token is used for authentication to minimize number of connection to the database,
+- many throttling mechanisms were added,
+- pagination was added,
+- HyperlinkedRelatedField for user's info in images list view was added,
+- the code has docstrings,
+- and it's easily deployable via docker, but you need your own AWS architecture (Localstack will be added soon),
+- there is a CI/CD pipeline which would run tests if I wrote them, it runs black linter check, dockerizes the project and deploys it to Heroku from the Docker container,
+- and there are authentication and authorization mechanisms.
 
-Besides that, I implemented automated testing in a CI/CD pipeline on SemaphoreCI, along
-with dockerization and deployment from a container to Heroku.
+
 
 
 ## :hammer: Technologies used
 - Python 3.7 & 3.8
 - Django 3.2
-- Django REST Framework 3.13.1
+- Django REST Framework
 - PostgreSQL 14.2
 - AWS S3
 - AWS Lambda
-- Gunicorn 20.1.0
+- Gunicorn
 - Docker
 - SemaphoreCI
 - Heroku
@@ -112,10 +129,16 @@ DJANGO_SUPERUSER_EMAIL=TestAdmin@email.com
 ```
 
 
-## :rocket: Features
-- two models in a many-to-many relationship (Author, Song),
-- django admin panel which enables creating instances of models and viewing them,
-- purely in-memory database.
+## :rocket: Main features
+
+The recruitment task demanded such features and all are provided in a required format:
+- accessing `/books` displays all stored books,
+- accessing `/books?published_date=<year>` displays stored books published in a certain year,
+- accessing `/books?sort=-published_date` displays all stored books sorted by published date in descending order,
+- accessing `/books?author=<author1>&author=<author2>` displays all stored books written by _author1_ and all stored books written by _author2_,
+- accessing `/books/<book_id>` displays details of a single book of id _book_id_,
+- sending a POST request to `/db` with a `q` keyword adds 10 books to the API's database; the books come from a query sent to the Google Books API with the passed keyword and the operation will update existing books if there are such.
+
 
 Furthermore, the website is deployed on Heroku from a Docker image using a CI/CD SemaphoreCI pipeline:
 

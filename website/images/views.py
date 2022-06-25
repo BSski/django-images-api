@@ -132,6 +132,7 @@ def create_temp_thumbnail_link(
         if not has_time_exp_permission:
             return Response({"status": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
 
+    if time_exp:
         time_exp_validation_status = validate_thumbnail_size(thumbnail_size)
         if time_exp_validation_status != "OK":
             return time_exp_validation_status
