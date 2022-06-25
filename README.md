@@ -7,7 +7,7 @@
 
 
 [![Build Status](https://bsski.semaphoreci.com/badges/DjangoImagesAPI/branches/main.svg?style=shields&key=0adba4be-b67c-416d-802b-90f43f19ff0f)](https://bsski.semaphoreci.com/projects/DjangoImagesAPI)
-[![Demo Uptime](https://img.shields.io/uptimerobot/ratio/7/m792080634-601b784c89ee78a144c83275)](https://django-music-bsski.herokuapp.com/)
+[![Demo Uptime](https://img.shields.io/uptimerobot/ratio/7/m792084088-74413a0f3915fe920947793b)](https://django-music-bsski.herokuapp.com/)
 [![Heroku](https://pyheroku-badge.herokuapp.com/?app=django-images-api-bsski&style=flat)](https://django-images-api-bsski.herokuapp.com/)
 [![CodeFactor](https://www.codefactor.io/repository/github/bsski/djangoimagesapi/badge)](https://www.codefactor.io/repository/github/bsski/djangoimagesapi)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
