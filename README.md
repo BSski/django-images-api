@@ -7,7 +7,7 @@
 
 
 [![Build Status](https://bsski.semaphoreci.com/badges/DjangoImagesAPI/branches/main.svg?style=shields&key=0adba4be-b67c-416d-802b-90f43f19ff0f)](https://bsski.semaphoreci.com/projects/DjangoImagesAPI)
-[![Demo Uptime](https://img.shields.io/uptimerobot/ratio/7/m792084088-74413a0f3915fe920947793b)](https://django-music-bsski.herokuapp.com/)
+[![Demo Uptime](https://img.shields.io/uptimerobot/ratio/7/m792085563-1a58f5c01a134aa314500d44)](https://django-images-api-bsski.herokuapp.com/)
 [![Heroku](https://pyheroku-badge.herokuapp.com/?app=django-images-api-bsski&style=flat)](https://django-images-api-bsski.herokuapp.com/)
 [![CodeFactor](https://www.codefactor.io/repository/github/bsski/djangoimagesapi/badge)](https://www.codefactor.io/repository/github/bsski/djangoimagesapi)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -36,6 +36,7 @@ https://django-images-api-bsski.herokuapp.com/auth/login
 ## Table of contents
 * [Project description](#scroll-project-description)
 * [Technologies used](#hammer-technologies-used)
+* [Deployment](#hammer_and_wrench-deployment)
 * [Environment variables](#closed_lock_with_key-environment-variables)
 * [Main features](#rocket-main-features)
 * [Room for improvement](#arrow_up-room-for-improvement)
@@ -84,36 +85,36 @@ The project:
 - dj-rest-auth with JWT Token
 
 
-[//]: # (## :hammer_and_wrench: Deployment)
+## :hammer_and_wrench: Deployment
 
-[//]: # ()
-[//]: # (A&#41; through Docker:)
 
-[//]: # (1. Create an `.env` file basing on `.env_sample_file` from the repository.)
+A) through Docker:
 
-[//]: # (2. Run `docker run --env-file .env -p 8020:8020 bsski/django-music:latest` in the `.env` file directory.)
+1. Create an `.env` file basing on `.env_sample_file` from the repository. Set `PORT` to 8020.
 
-[//]: # (3. Access `localhost:8020`. )
+2. Run `docker run --env-file .env -p 8020:8020 bsski/images-api:latest` in the `.env` file directory.
 
-[//]: # ()
-[//]: # (B&#41; without Docker:)
+3. Access `localhost:8020`. 
 
-[//]: # (1. Download the repository.)
 
-[//]: # (2. Create a virtual environment.)
+B) without Docker:
 
-[//]: # (3. Run `pip install -r requirements.txt` in the directory of `requirements.txt`.)
+1. Download the repository.
 
-[//]: # (4. Create an `.env` file basing on `.env_sample_file` from the repository in the directory of `.env_sample_file`.)
+2. Create a virtual environment.
 
-[//]: # (5. Run `python manage.py runserver --noreload` in the directory of `manage.py`.)
+3. Run `pip install -r requirements.txt` (or `requirements-windows.txt`) in the directory of `requirements.txt`.
 
-[//]: # (6. Access `127.0.0.1:8000`.)
+4. Create an `.env` file basing on `.env_sample_file` from the repository in the directory of `.env_sample_file`. Set `PORT` to 8000.
 
-[//]: # ()
-[//]: # (The admin panel can be found under your chosen URL or, if you didn't set it in the .env file, the default `/hidden_admin_url`.)
+5. Run `python manage.py runserver` in the directory of `manage.py`.
 
-[//]: # (Security through obscurity is not enough of course, but I find it a nice complementary solution.)
+6. Access `127.0.0.1:8000`.
+
+
+The admin panel can be found under your chosen URL or, if you didn't set it in the .env file, the default `/hidden_admin_url`.
+
+Security through obscurity is not enough of course, but I find it a nice complementary solution.
 
 
 ## :closed_lock_with_key: Environment variables

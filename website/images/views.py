@@ -1,7 +1,7 @@
 import boto3
 
 from rest_framework import viewsets
-from rest_framework import status
+from rest_framework.status import HTTP_201_CREATED, HTTP_403_FORBIDDEN
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.pagination import LimitOffsetPagination
@@ -11,8 +11,6 @@ from images.decorators import (
     has_certain_thumbnail_size_permission,
     has_fetch_expiring_link_permission,
     has_use_original_image_link_permission,
-    is_correct_user_for_original_image,
-    is_correct_user_for_thumbnail,
 )
 from images.models import Image
 from images.serializers import AddImageSerializer, ImageSerializer
@@ -29,11 +27,14 @@ from images.throttles import (
     ThumbnailLinkSustainedThrottle,
 )
 from images.utils import (
-    get_s3_client,
-    get_s3_objects,
-    get_temp_thumbnail_link,
+    check_if_file_exists_in_s3,
     create_new_thumbnail,
-    validate_thumbnail_size,
+    get_s3_client,
+    get_temp_thumbnail_link,
+)
+from images.validators import (
+    validate_if_correct_user,
+    validate_img_name,
     validate_time_exp,
 )
 from website import settings
@@ -88,7 +89,7 @@ class ImageViewSet(viewsets.ModelViewSet):
         headers = self.get_success_headers(serializer.data)
         return Response(
             {"status": "Successfully posted"},
-            status=status.HTTP_201_CREATED,
+            status=HTTP_201_CREATED,
             headers=headers,
         )
 
@@ -96,9 +97,14 @@ class ImageViewSet(viewsets.ModelViewSet):
 @api_view(["GET"])
 @throttle_classes([OriginalImgLinkBurstThrottle, OriginalImgLinkSustainedThrottle])
 @has_use_original_image_link_permission
-@is_correct_user_for_original_image
 def create_temp_original_image_link(request, img_name):
     """Creates a temporary link to the original version of the requested image."""
+    if (img_name_status := validate_img_name(img_name)) != "OK":
+        return img_name_status
+
+    if (user_status := validate_if_correct_user(request, img_name)) != "OK":
+        return user_status
+
     s3_client = boto3.client(
         "s3",
         aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
@@ -120,34 +126,32 @@ def create_temp_original_image_link(request, img_name):
 @throttle_classes([ThumbnailLinkBurstThrottle, ThumbnailLinkSustainedThrottle])
 @has_fetch_expiring_link_permission
 @has_certain_thumbnail_size_permission
-@is_correct_user_for_thumbnail
 def create_temp_thumbnail_link(
     request, thumbnail_size, img_name, has_time_exp_permission
 ):
     """Creates a temporary link to a requested thumbnail size."""
-    validation_status = validate_thumbnail_size(thumbnail_size)
-    if validation_status != "OK":
-        return validation_status
+    if (img_name_status := validate_img_name(img_name)) != "OK":
+        return img_name_status
+
+    if (user_status := validate_if_correct_user(request, img_name)) != "OK":
+        return user_status
 
     time_exp = request.query_params.get("time_exp", None)
+    if time_exp and not has_time_exp_permission:
+        return Response(
+            {
+                "status": "Forbidden: the user is not permitted to specify expiration time of the link."
+            },
+            status=HTTP_403_FORBIDDEN,
+        )
     if time_exp:
-        if not has_time_exp_permission:
-            return Response({"status": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
-
-    if time_exp:
-        time_exp_validation_status = validate_thumbnail_size(thumbnail_size)
-        if time_exp_validation_status != "OK":
-            return time_exp_validation_status
+        if (time_exp_status := validate_time_exp(time_exp)) != "OK":
+            return time_exp_status
     else:
         time_exp = 120
 
     s3_client = get_s3_client()
-    s3_objects = get_s3_objects(s3_client)
-
-    img_path = f"images/{thumbnail_size}_{img_name}"
-    file_exists_in_s3 = "Contents" in s3_objects and any(
-        dictionary["Key"] == img_path for dictionary in s3_objects["Contents"]
-    )
+    file_exists_in_s3 = check_if_file_exists_in_s3(img_name, thumbnail_size, s3_client)
     if not file_exists_in_s3:
         create_new_thumbnail(thumbnail_size, img_name)
     temp_url = get_temp_thumbnail_link(s3_client, thumbnail_size, img_name, time_exp)

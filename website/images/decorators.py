@@ -3,49 +3,7 @@ import functools
 from rest_framework import status
 from rest_framework.response import Response
 
-
-def is_correct_user_for_thumbnail(func):
-    """Check whether the requesting user is the one who the image belongs to."""
-
-    @functools.wraps(func)
-    def wrapper_is_correct_user(
-        request, thumbnail_size, img_name, has_time_exp_permission, *args, **kwargs
-    ):
-        if request.user.id != int(img_name.split("_")[0]):
-            return Response({"status": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
-        return func(
-            request, thumbnail_size, img_name, has_time_exp_permission, *args, **kwargs
-        )
-
-    return wrapper_is_correct_user
-
-
-def is_correct_user_for_original_image(func):
-    """Check whether the requesting user is the one who the image belongs to."""
-
-    @functools.wraps(func)
-    def wrapper_is_correct_user(request, img_name, *args, **kwargs):
-        if request.user.id != int(img_name.split("_")[0]):
-            return Response({"status": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
-        return func(request, img_name, *args, **kwargs)
-
-    return wrapper_is_correct_user
-
-
-def has_certain_thumbnail_size_permission(func):
-    """
-    Check whether the requesting user is permitted to get a link to a thumbnail of the
-    requested size.
-    """
-
-    @functools.wraps(func)
-    def wrapper_has_thumbnail_permission(request, thumbnail_size, *args, **kwargs):
-        if int(thumbnail_size) not in request.user.user_tier.thumbnails_sizes["sizes"]:
-            return Response({"status": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
-        func(request, thumbnail_size, *args, **kwargs)
-        return func(request, thumbnail_size, *args, **kwargs)
-
-    return wrapper_has_thumbnail_permission
+from images.validators import validate_thumbnail_size_value
 
 
 def has_fetch_expiring_link_permission(func):
@@ -59,14 +17,36 @@ def has_fetch_expiring_link_permission(func):
         request, thumbnail_size, img_name, *args, **kwargs
     ):
         has_time_exp_permission = bool(request.user.user_tier.can_fetch_expiring_link)
-        func(
-            request, thumbnail_size, img_name, has_time_exp_permission, *args, **kwargs
-        )
         return func(
             request, thumbnail_size, img_name, has_time_exp_permission, *args, **kwargs
         )
 
     return wrapper_has_fetch_expiring_link_permission
+
+
+def has_certain_thumbnail_size_permission(func):
+    """
+    Check whether the requesting user is permitted to get a link to a thumbnail of the
+    requested size. Validates `thumbnail_size` beforehand.
+    """
+
+    @functools.wraps(func)
+    def wrapper_has_thumbnail_permission(request, thumbnail_size, *args, **kwargs):
+        if (
+            thumbnail_size_status := validate_thumbnail_size_value(thumbnail_size)
+        ) != "OK":
+            return thumbnail_size_status
+
+        if int(thumbnail_size) not in request.user.user_tier.thumbnails_sizes["sizes"]:
+            return Response(
+                {
+                    "status": "Forbidden: the user is not permitted to access this thumbnail size."
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
+        return func(request, thumbnail_size, *args, **kwargs)
+
+    return wrapper_has_thumbnail_permission
 
 
 def has_use_original_image_link_permission(func):
@@ -77,7 +57,12 @@ def has_use_original_image_link_permission(func):
     @functools.wraps(func)
     def wrapper_has_use_original_image_link_permission(request, *args, **kwargs):
         if not request.user.user_tier.can_use_original_image_link:
-            return Response({"status": "Forbidden"}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {
+                    "status": "Forbidden: the user is not permitted to access original image link."
+                },
+                status=status.HTTP_403_FORBIDDEN,
+            )
         return func(request, *args, **kwargs)
 
     return wrapper_has_use_original_image_link_permission

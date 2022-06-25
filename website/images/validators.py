@@ -1,8 +1,13 @@
+import re
+
 from django.core.exceptions import ValidationError
 from django.template.defaultfilters import filesizeformat
 from django.utils.deconstruct import deconstructible
 
 import magic
+
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN
+from rest_framework.response import Response
 
 
 @deconstructible
@@ -60,3 +65,52 @@ class FileValidator(object):
             and self.min_size == other.min_size
             and self.content_types == other.content_types
         )
+
+
+def validate_thumbnail_size_value(thumbnail_size):
+    if not thumbnail_size or not thumbnail_size.isnumeric():
+        return Response(
+            {"status": "Inappropriate value: thumbnail size has to be an integer"},
+            status=HTTP_400_BAD_REQUEST,
+        )
+    return "OK"
+
+
+def validate_time_exp(time_exp):
+    if not time_exp.isnumeric():
+        return Response(
+            {"status": "Inappropriate argument type: time_exp has to be an integer."},
+            status=HTTP_400_BAD_REQUEST,
+        )
+    if int(time_exp) < 300 or int(time_exp) > 30000:
+        return Response(
+            {"status": "Inappropriate value: time_exp is not between 300 and 30000."},
+            status=HTTP_400_BAD_REQUEST,
+        )
+    return "OK"
+
+
+def validate_img_name(img_name):
+    if len(img_name) > 50:
+        return Response(
+            {"status": "Inappropriate value: image name is not valid."},
+            status=HTTP_400_BAD_REQUEST,
+        )
+    img_name_regex = re.compile(
+        "([0-9]+)_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(jpe?g|png)"
+    )
+    if not re.fullmatch(img_name_regex, img_name):
+        return Response(
+            {"status": "Inappropriate value: image name is not valid."},
+            status=HTTP_400_BAD_REQUEST,
+        )
+    return "OK"
+
+
+def validate_if_correct_user(request, img_name):
+    if request.user.id != int(img_name.split("_")[0]):
+        return Response(
+            {"status": "Forbidden: the user is not the owner of this image."},
+            status=HTTP_403_FORBIDDEN,
+        )
+    return "OK"
