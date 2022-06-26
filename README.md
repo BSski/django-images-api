@@ -145,7 +145,7 @@ The recruitment task demanded such features and all are provided in a required f
 - sending a POST request to `/auth/logout/` lets you log out,
 - accessing `/images/images/` when logged in lists current user's images,
 - accessing 'images/images/' when logged in with `?limit=3` at the end of it sets a pagination for the current page,
-- accessing thumbnail link from image view with `?time_exp=500` at the end of it generates a link to it expiring in 500 seconds (if logged in user is permitted to do that).
+- accessing thumbnail link from image view with `?time_exp=500` at the end of it generates a link to it expiring in 500 seconds (if logged in user is permitted to do that; range: 300-30000).
 
 
 Furthermore, the website is deployed on Heroku from a Docker image using a CI/CD SemaphoreCI pipeline:
@@ -159,7 +159,8 @@ Due to time limitation there are very important things left to add:
 - Localstack to test and run app locally,
 - tests,
 - typehints,
-- the code would also benefit from some cleaning.
+- the code would also benefit from some cleaning,
+- logging.
 
 
 ## :construction_worker: Author

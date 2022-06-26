@@ -91,13 +91,8 @@ def validate_time_exp(time_exp):
 
 
 def validate_img_name(img_name):
-    if len(img_name) > 50:
-        return Response(
-            {"status": "Inappropriate value: image name is not valid."},
-            status=HTTP_400_BAD_REQUEST,
-        )
     img_name_regex = re.compile(
-        "([0-9]+)_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(jpe?g|png)"
+        "(\d{0,8})_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(jpe?g|png)"
     )
     if not re.fullmatch(img_name_regex, img_name):
         return Response(
