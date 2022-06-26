@@ -9,6 +9,7 @@
 [![Build Status](https://bsski.semaphoreci.com/badges/DjangoImagesAPI/branches/main.svg?style=shields&key=0adba4be-b67c-416d-802b-90f43f19ff0f)](https://bsski.semaphoreci.com/projects/DjangoImagesAPI)
 [![Demo Uptime](https://img.shields.io/uptimerobot/ratio/7/m792085563-1a58f5c01a134aa314500d44)](https://django-images-api-bsski.herokuapp.com/)
 [![Heroku](https://pyheroku-badge.herokuapp.com/?app=django-images-api-bsski&style=flat)](https://django-images-api-bsski.herokuapp.com/)
+[![Maintainability](https://api.codeclimate.com/v1/badges/a84055e6e49ddb02653e/maintainability)](https://codeclimate.com/github/BSski/DjangoImagesAPI/maintainability)
 [![CodeFactor](https://www.codefactor.io/repository/github/bsski/djangoimagesapi/badge)](https://www.codefactor.io/repository/github/bsski/djangoimagesapi)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 </div>
@@ -56,7 +57,7 @@ The project:
 - where user tiers with arbitrary permissions can be created via admin panel,
 - and if a user tier settings change, all its users are updated, and so are their images,
 - and if a user's user tier changes, his images get updated,
-- and if an images owner changed, its thumbnail links are updated,
+- and if an image's owner changed, its thumbnail links are updated,
 - user inputted data is validated (includes regex!),
 - project's design and architecture was created with performance in mind:
     - only original user's images are stored permanently: thumbnails are stored in a S3 bucket which deletes files that were not accessed for 7 days,
