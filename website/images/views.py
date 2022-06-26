@@ -40,7 +40,7 @@ from images.validators import (
 from website import settings
 
 
-@api_view(["GET"])
+@api_view(["HEAD", "GET"])
 @permission_classes([AllowAny])
 def home(request):
     """Default view of the app."""
