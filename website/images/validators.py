@@ -68,6 +68,7 @@ class FileValidator(object):
 
 
 def validate_thumbnail_size_value(thumbnail_size):
+    """Checks whether thumbnail size value from the URL is valid."""
     if not thumbnail_size or not thumbnail_size.isnumeric():
         return Response(
             {"status": "Inappropriate value: thumbnail size has to be an integer"},
@@ -77,6 +78,7 @@ def validate_thumbnail_size_value(thumbnail_size):
 
 
 def validate_time_exp(time_exp):
+    """Checks whether time expiration parameter from the URL is valid."""
     if not time_exp.isnumeric():
         return Response(
             {"status": "Inappropriate argument type: time_exp has to be an integer."},
@@ -91,6 +93,7 @@ def validate_time_exp(time_exp):
 
 
 def validate_img_name(img_name):
+    """Checks whether image name from the URL is valid."""
     img_name_regex = re.compile(
         "(\d{0,8})_[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(jpe?g|png)"
     )
@@ -103,6 +106,7 @@ def validate_img_name(img_name):
 
 
 def validate_if_correct_user(request, img_name):
+    """Check whether the requesting user is the one who the image belongs to."""
     if request.user.id != int(img_name.split("_")[0]):
         return Response(
             {"status": "Forbidden: the user is not the owner of this image."},

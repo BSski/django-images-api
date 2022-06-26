@@ -57,7 +57,7 @@ The project:
 - and if a user tier settings change, all its users are updated, and so are their images,
 - and if a user's user tier changes, his images get updated,
 - and if an images owner changed, its thumbnail links are updated,
-- user inputted data is validated,
+- user inputted data is validated (includes regex!),
 - project's design and architecture was created with performance in mind:
     - only original user's images are stored permanently: thumbnails are stored in a S3 bucket which deletes files that were not accessed for 7 days,
     - thumbnail is generated only when requested, by AWS Lambda function,

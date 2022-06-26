@@ -30,6 +30,7 @@ def get_temp_thumbnail_link(s3_client, thumbnail_size, img_name, time_exp):
 
 
 def create_new_thumbnail(thumbnail_size, img_name):
+    """Creates a new thumbnail in the S3 thumbnail bucket."""
     bucket_name = settings.AWS_STORAGE_BUCKET_NAME
     destination_bucket = settings.AWS_THUMBNAILS_STORAGE_BUCKET_NAME
 
@@ -49,12 +50,15 @@ def create_new_thumbnail(thumbnail_size, img_name):
     )
 
 
-def get_s3_objects(s3_client):
+def _get_all_s3_objects(s3_client):
     return s3_client.list_objects_v2(Bucket=settings.AWS_THUMBNAILS_STORAGE_BUCKET_NAME)
 
 
 def check_if_file_exists_in_s3(img_name, thumbnail_size, s3_client):
-    s3_objects = get_s3_objects(s3_client)
+    """
+    Checks whether file of name `thumbnail_size_img_name` exists in a S3 bucket.
+    """
+    s3_objects = _get_all_s3_objects(s3_client)
     img_path = f"images/{thumbnail_size}_{img_name}"
     return "Contents" in s3_objects and any(
         dictionary["Key"] == img_path for dictionary in s3_objects["Contents"]

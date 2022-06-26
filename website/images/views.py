@@ -43,6 +43,7 @@ from website import settings
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def home(request):
+    """Default view of the app."""
     return Response(
         {
             "message": "Hi there! You're probably looking for /auth/login/ and /images/ endpoints."
