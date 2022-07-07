@@ -52,10 +52,7 @@ blocks:
           - aws configure set aws_secret_access_key "test"
           - aws configure set region "us-east-1"
           - aws --endpoint-url=$LOCALSTACK_ENDPOINT_URL s3 ls
-          - 'function awsls {'
-          - '     aws --endpoint-url=$LOCALSTACK_ENDPOINT_URL $args'
-          - '}'
-          - awsls s3api create-bucket --bucket testbucket1
+          - aws --endpoint-url=$LOCALSTACK_ENDPOINT_URL s3api create-bucket --bucket testbucket1
 promotions:
   - name: Dockerize
     pipeline_file: pipeline_3.yml
