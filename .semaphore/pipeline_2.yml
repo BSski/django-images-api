@@ -13,7 +13,12 @@ blocks:
       jobs:
         - name: test1
           commands:
-            - 'echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin'
+            - cd website
+            - python manage.py makemigrations users
+            - python manage.py makemigrations images
+            - python manage.py migrate
+            - python manage.py test
+            - docker stop
       secrets:
         - name: dockerhub
       env_vars:
