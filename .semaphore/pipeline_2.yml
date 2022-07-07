@@ -1,5 +1,5 @@
 version: v1.0
-name: Docker
+name: Tests
 agent:
   machine:
     type: e1-standard-2
@@ -18,6 +18,7 @@ blocks:
             - python manage.py makemigrations images
             - python manage.py migrate
             - python manage.py test
+            - echo job
             - docker stop
       secrets:
         - name: dockerhub
@@ -46,6 +47,7 @@ blocks:
           - python manage.py makemigrations images
           - python manage.py migrate
           - cd ..
+          - echo prologue
           - aws configure set aws_access_key_id "test"
           - aws configure set aws_secret_access_key "test"
           - aws configure set region "us-east-1"
