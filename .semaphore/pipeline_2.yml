@@ -18,7 +18,7 @@ blocks:
             - python manage.py migrate
             - python manage.py test
             - echo job
-            - docker stop
+            - docker stop $(docker ps -a -q)
       secrets:
         - name: dockerhub
       env_vars:
