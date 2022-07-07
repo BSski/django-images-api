@@ -3,12 +3,15 @@ name: Docker
 agent:
   machine:
     type: e1-standard-2
-    os_image: ubuntu1804
+    os_image: ubuntu2004
+  containers:
+    - name: main
+      image: 'localstack/localstack:latest'
 blocks:
-  - name: Docker build
+  - name: Tests
     task:
       jobs:
-        - name: Build
+        - name: test1
           commands:
             - 'echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin'
       secrets:
@@ -24,6 +27,8 @@ blocks:
           value: this_is_a_test_key_j0&wbl8ng)zemqby(abss_o1e2^p(cxn2xn*xuj-&@l9!-s
         - name: DEFAULT_FILE_STORAGE
           value: storages.backends.s3boto3.S3Boto3Storage
+        - name: LOCALSTACK_ENDPOINT_URL
+          value: 'http://localhost:4566'
       prologue:
         commands:
           - sem-version python 3.8
@@ -36,8 +41,16 @@ blocks:
           - python manage.py makemigrations images
           - python manage.py migrate
           - cd ..
+          - aws configure set aws_access_key_id "test"
+          - aws configure set aws_secret_access_key "test"
+          - aws configure set region "us-east-1"
+          - aws --endpoint-url=$LOCALSTACK_ENDPOINT_URL s3 ls
+          - 'function awsls {'
+          - '     aws --endpoint-url=$LOCALSTACK_ENDPOINT_URL $args'
+          - '}'
+          - awsls s3api create-bucket --bucket testbucket1
 promotions:
-  - name: Deploy to Heroku
+  - name: Dockerize
     pipeline_file: pipeline_3.yml
     auto_promote:
       when: branch = 'main' AND result = 'passed'
