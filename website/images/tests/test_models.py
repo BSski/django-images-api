@@ -34,55 +34,25 @@ class ImageModelTest(TestCase):
         self.assertEqual("Contents" in s3_objects, False)
 
     def test_image_can_be_uploaded_to_s3_bucket(self):
-        # This way of posting doesn't work.
-        self.client.post(
-            reverse("images:api-root"), {"image": ImageModelTest.test_image}
+        # Need authentication for posting to this endpoint.
+        # with open('images/tests/files/png_image.png', 'rb') as test_image:
+        #     response = self.client.post(
+        #         reverse("images:api-root")+"images/", {"image": test_image}
+        #     )
+        s3_client = boto3.client(
+            "s3",
+            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+            region_name=settings.AWS_S3_REGION_NAME,
+            endpoint_url=settings.LOCALSTACK_ENDPOINT_URL,
         )
-
-        s3_objects = ImageModelTest.s3_client.list_objects_v2(
+        s3_client.upload_file(
+            'images/tests/files/png_image.png',
+            settings.AWS_STORAGE_BUCKET_NAME,
+            "images/test_image.png",
+            ExtraArgs={'ContentType': "image/png"}
+        )
+        s3_objects = s3_client.list_objects_v2(
             Bucket=settings.AWS_STORAGE_BUCKET_NAME
         )
         self.assertEqual("Contents" in s3_objects, True)
-
-
-# ### example code below
-#
-# from datetime import date
-#
-# from django.test import TestCase
-#
-# from music.models import Author, Song
-#
-#
-# class AuthorModelTest(TestCase):
-#     @classmethod
-#     def setUpTestData(cls):
-#         cls.test_author = Author.objects.create(
-#             name="TestName",
-#             surname="TestSurname",
-#         )
-#
-#     def test_author_str_equals_name_and_surname(self):
-#         self.assertEqual(
-#             str(self.test_author), f"{self.test_author.name} {self.test_author.surname}"
-#         )
-#
-#
-# class SongModelTest(TestCase):
-#     @classmethod
-#     def setUpTestData(cls):
-#         cls.test_song = Song.objects.create(
-#             title="TestTitle",
-#             created_at=date(2022, 6, 8),
-#         )
-#
-#     def test_song_str_equals_song_title(self):
-#         self.assertEqual(str(self.test_song), self.test_song.title)
-#
-#     def test_song_has_an_author(self):
-#         test_author = Author.objects.create(
-#             name="TestName",
-#             surname="TestSurname",
-#         )
-#         self.test_song.authors.set([test_author])
-#         self.assertEqual(self.test_song.authors.count(), 1)
