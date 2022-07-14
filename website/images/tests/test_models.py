@@ -27,11 +27,11 @@ class ImageModelTest(TestCase):
             endpoint_url=settings.LOCALSTACK_ENDPOINT_URL,
         )
 
-    def test_initial_s3_bucket_is_empty(self):
-        s3_objects = ImageModelTest.s3_client.list_objects_v2(
-            Bucket=settings.AWS_STORAGE_BUCKET_NAME
-        )
-        self.assertEqual("Contents" in s3_objects, False)
+    # def test_initial_s3_bucket_is_empty(self):
+    #     s3_objects = ImageModelTest.s3_client.list_objects_v2(
+    #         Bucket=settings.AWS_STORAGE_BUCKET_NAME
+    #     )
+    #     self.assertEqual("Contents" in s3_objects, False)
 
     def test_image_can_be_uploaded_to_s3_bucket(self):
         # Need authentication for posting to this endpoint.
