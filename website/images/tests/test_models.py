@@ -12,13 +12,6 @@ from website import settings
 class ImageModelTest(TestCase):
     @classmethod
     def setUpTestData(cls):
-        # cls.test_image = Image.objects.create(
-        #     name="TestImage",
-        #     image=""
-        # )
-        cls.test_image = SimpleUploadedFile(
-            "testImage.jpg", b"file_content", content_type="image/jpeg"
-        )
         cls.s3_client = boto3.client(
             "s3",
             aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
