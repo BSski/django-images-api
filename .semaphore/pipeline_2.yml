@@ -42,6 +42,10 @@ blocks:
           value: storages.backends.s3boto3.S3Boto3Storage
         - name: LOCALSTACK_ENDPOINT_URL
           value: 'http://localhost:4566'
+        - name: AWS_STORAGE_BUCKET_NAME
+          value: 'bsski-images-api'
+        - name: AWS_THUMBNAILS_STORAGE_BUCKET_NAME
+          value: 'bsski-images-api-thumbnails'
       prologue:
         commands:
           - sem-version python 3.8
