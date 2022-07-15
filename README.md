@@ -151,7 +151,7 @@ The recruitment task demanded such features and all are provided in a required f
 
 Furthermore, the website is deployed on Heroku from a Docker image using a CI/CD SemaphoreCI pipeline:
 
-![CI/CD screenshot](https://i.imgur.com/0NfYohr.png)
+![CI/CD screenshot](https://i.imgur.com/9oT6tTa.png)
 
 
 ## :arrow_up: Room for improvement
