@@ -10,23 +10,18 @@ blocks:
   - name: Tests
     task:
       jobs:
-        - name: Localstack tests
+        - name: Tests
           commands:
             - cd website
             - python manage.py makemigrations users
             - python manage.py makemigrations images
             - python manage.py migrate
-            - python manage.py test
-            - echo job
-            - docker stop $(docker ps -a -q)
-        - name: Tests coverage badge
-          commands:
-            - cd website
             - coverage run manage.py test
             - coverage xml
             - 'curl -Os https://uploader.codecov.io/latest/linux/codecov'
             - chmod +x codecov
             - './codecov -t ${CODECOV_TOKEN}'
+            - docker stop $(docker ps -a -q)
       secrets:
         - name: codecov-images
       env_vars:
