@@ -13,8 +13,7 @@ blocks:
         - name: Tests
           commands:
             - cd website
-            - python manage.py makemigrations users
-            - python manage.py makemigrations images
+            - python manage.py makemigrations
             - python manage.py migrate
             - coverage run manage.py test
             - coverage xml
@@ -49,8 +48,7 @@ blocks:
           - mkdir -p .pip_cache
           - pip install --cache-dir .pip_cache -r requirements.txt
           - cd website
-          - python manage.py makemigrations users
-          - python manage.py makemigrations images
+          - python manage.py makemigrations
           - python manage.py migrate
           - cd ..
           - echo prologue
