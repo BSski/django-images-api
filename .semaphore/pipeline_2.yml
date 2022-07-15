@@ -1,28 +1,21 @@
 version: v1.0
-name: Tests
+name: Docker
 agent:
   machine:
     type: e1-standard-2
-    os_image: ubuntu2004
-execution_time_limit:
-  minutes: 10
+    os_image: ubuntu1804
 blocks:
-  - name: Tests
+  - name: Docker build
     task:
       jobs:
-        - name: Tests
+        - name: Build
           commands:
-            - cd website
-            - python manage.py makemigrations
-            - python manage.py migrate
-            - coverage run manage.py test
-            - coverage xml
-            - 'curl -Os https://uploader.codecov.io/latest/linux/codecov'
-            - chmod +x codecov
-            - './codecov -t ${CODECOV_TOKEN}'
-            - docker stop $(docker ps -a -q)
+            - 'echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin'
+            - 'docker pull $DOCKER_USERNAME/images-api:latest || true'
+            - 'docker build --cache-from=$DOCKER_USERNAME/images-api:latest -t $DOCKER_USERNAME/images-api:latest .'
+            - 'docker push $DOCKER_USERNAME/images-api:latest'
       secrets:
-        - name: codecov-images
+        - name: dockerhub
       env_vars:
         - name: DEBUG
           value: '0'
@@ -34,12 +27,6 @@ blocks:
           value: this_is_a_test_key_j0&wbl8ng)zemqby(abss_o1e2^p(cxn2xn*xuj-&@l9!-s
         - name: DEFAULT_FILE_STORAGE
           value: storages.backends.s3boto3.S3Boto3Storage
-        - name: LOCALSTACK_ENDPOINT_URL
-          value: 'http://localhost:4566'
-        - name: AWS_STORAGE_BUCKET_NAME
-          value: 'bsski-images-api'
-        - name: AWS_THUMBNAILS_STORAGE_BUCKET_NAME
-          value: 'bsski-images-api-thumbnails'
       prologue:
         commands:
           - sem-version python 3.8
@@ -51,10 +38,8 @@ blocks:
           - python manage.py makemigrations
           - python manage.py migrate
           - cd ..
-          - echo prologue
-          - 'docker run -d -p 4566:4566 localstack/localstack:latest'
 promotions:
-  - name: Dockerize
-    pipeline_file: pipeline_3.yml
+  - name: Deploy to Heroku
+    pipeline_file: pipeline_4.yml
     auto_promote:
       when: branch = 'main' AND result = 'passed'

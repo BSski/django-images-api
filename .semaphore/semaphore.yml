@@ -16,8 +16,10 @@ blocks:
             - cache restore
             - pip install --cache-dir .pip_cache -r requirements.txt
             - cache store
-  - name: Checks
+  - name: Tests and checks
     task:
+      secrets:
+        - name: codecov-images
       env_vars:
         - name: DEBUG
           value: '0'
@@ -29,13 +31,32 @@ blocks:
           value: '1'
         - name: DEFAULT_FILE_STORAGE
           value: storages.backends.s3boto3.S3Boto3Storage
+        - name: LOCALSTACK_ENDPOINT_URL
+          value: 'http://localhost:4566'
+        - name: AWS_STORAGE_BUCKET_NAME
+          value: 'bsski-images-api'
+        - name: AWS_THUMBNAILS_STORAGE_BUCKET_NAME
+          value: 'bsski-images-api-thumbnails'
       prologue:
         commands:
           - sem-version python 3.8
           - checkout
           - cache restore
+          - mkdir -p .pip_cache
           - pip install --cache-dir .pip_cache -r requirements.txt
       jobs:
+        - name: Tests
+          commands:
+            - cd website
+            - python manage.py makemigrations
+            - python manage.py migrate
+            - 'docker run -d -p 4566:4566 localstack/localstack:latest'
+            - coverage run manage.py test
+            - coverage xml
+            - 'curl -Os https://uploader.codecov.io/latest/linux/codecov'
+            - chmod +x codecov
+            - './codecov -t ${CODECOV_TOKEN}'
+            - docker stop $(docker ps -a -q)
         - name: Deploy check
           commands:
             - cd website
