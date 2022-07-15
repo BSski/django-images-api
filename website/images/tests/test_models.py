@@ -19,6 +19,7 @@ class ImageModelTest(TestCase):
             region_name=settings.AWS_S3_REGION_NAME,
             endpoint_url=settings.LOCALSTACK_ENDPOINT_URL,
         )
+        ImageModelTest.s3_client.create_bucket(Bucket=settings.AWS_STORAGE_BUCKET_NAME)
 
     # def test_initial_s3_bucket_is_empty(self):
     #     s3_objects = ImageModelTest.s3_client.list_objects_v2(
@@ -32,20 +33,14 @@ class ImageModelTest(TestCase):
         #     response = self.client.post(
         #         reverse("images:api-root")+"images/", {"image": test_image}
         #     )
-        s3_client = boto3.client(
-            "s3",
-            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-            region_name=settings.AWS_S3_REGION_NAME,
-            endpoint_url=settings.LOCALSTACK_ENDPOINT_URL,
-        )
-        s3_client.upload_file(
-            'images/tests/files/png_image.png',
+
+        ImageModelTest.s3_client.upload_file(
+            "images/tests/files/png_image.png",
             settings.AWS_STORAGE_BUCKET_NAME,
             "images/test_image.png",
-            ExtraArgs={'ContentType': "image/png"}
+            ExtraArgs={"ContentType": "image/png"},
         )
-        s3_objects = s3_client.list_objects_v2(
+        s3_objects = ImageModelTest.s3_client.list_objects_v2(
             Bucket=settings.AWS_STORAGE_BUCKET_NAME
         )
         self.assertEqual("Contents" in s3_objects, True)
