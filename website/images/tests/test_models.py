@@ -3,7 +3,7 @@ import os
 import boto3
 
 from django.test import TestCase
-from django.urls import reverse
+from django.urls import reverse, resolve
 
 from images.models import Image
 from users.models import User, UserTier
@@ -11,6 +11,7 @@ from users.models import User, UserTier
 from website import settings
 
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.test import APIRequestFactory
 
 
 class ImageModelTest(TestCase):
@@ -56,27 +57,28 @@ class ImageModelTest(TestCase):
     #     self.assertEqual("Contents" in s3_objects, False)
 
     def test_image_can_be_uploaded_to_s3_bucket(self):
-        # Need authentication for posting to this endpoint.
-        # with open("images/tests/files/png_image.png", "rb") as test_image:
-        #     # SPRÓBUJ TO ZAKOMENTOWAĆ \/
-        #     self.client.force_login(self.enterprise_user)
-        #     # response1 = self.client.post(
-        #     #     reverse("images:api-root")+"images/", {"image": test_image}
-        #     # )
-        #     response2 = self.client.post(
-        #         reverse("images:api-root") + "images/",
-        #         {"name": "test_image", "image": test_image},
-        #         **self.bearer_token,
-        #     )
-        # print("\n\nresponse2:", response2.data)
+        factory = APIRequestFactory()
+        with open("images/tests/files/png_image.png", "rb") as test_image:
+            url = reverse("images:api-root") + "images/"
+            request = factory.post(
+                url,
+                {"name": "test_image", "image": test_image},
+                **self.bearer_token,
+            )
+            view = resolve(url).func
+            response = view(request)
+            response.render()
 
-        self.s3_client.upload_file(
-            "images/tests/files/png_image.png",
-            settings.AWS_STORAGE_BUCKET_NAME,
-            "images/test_image.png",
-            ExtraArgs={"ContentType": "image/png"},
-        )
-        s3_objects = self.s3_client.list_objects_v2(
+        print("\n\n\nresponse:", response)
+
+        # ImageModelTest.s3_client.upload_file(
+        #     "images/tests/files/png_image.png",
+        #     settings.AWS_STORAGE_BUCKET_NAME,
+        #     "images/test_image.png",
+        #     ExtraArgs={"ContentType": "image/png"},
+        # )
+
+        s3_objects = ImageModelTest.s3_client.list_objects_v2(
             Bucket=settings.AWS_STORAGE_BUCKET_NAME
         )
         self.assertEqual("Contents" in s3_objects, True)
