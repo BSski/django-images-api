@@ -1,25 +1,53 @@
+import os
+
 import boto3
 
-from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.urls import reverse
 
 from images.models import Image
+from users.models import User, UserTier
 
 from website import settings
 
+from rest_framework_simplejwt.tokens import RefreshToken
+
 
 class ImageModelTest(TestCase):
+    @property
+    def bearer_token(self):
+        user = self.enterprise_user
+        refresh = RefreshToken.for_user(user)
+        return {"HTTP_AUTHORIZATION": f"Bearer {refresh.access_token}"}
+
     @classmethod
     def setUpTestData(cls):
+        cls.enterprise_user_tier = UserTier.objects.create(
+            pk=5,
+            name="Enterprise",
+            thumbnails_sizes={"sizes": [200, 400]},
+            can_use_original_image_link=1,
+            can_fetch_expiring_link=1,
+            settings_hash="r8ls6w",
+        )
+        cls.enterprise_user = User.objects.create_user(
+            id=1,
+            username="test_user",
+            email="test@test.com",
+            password="test",
+            user_tier=cls.enterprise_user_tier,
+        )
         cls.s3_client = boto3.client(
             "s3",
-            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-            region_name=settings.AWS_S3_REGION_NAME,
+            aws_access_key_id="test",
+            aws_secret_access_key="test",
+            region_name="us-east-1",
             endpoint_url=settings.LOCALSTACK_ENDPOINT_URL,
         )
-        ImageModelTest.s3_client.create_bucket(Bucket=settings.AWS_STORAGE_BUCKET_NAME)
+        cls.s3_client.create_bucket(Bucket=settings.AWS_STORAGE_BUCKET_NAME)
+
+    def setUp(self):
+        self.client.force_login(self.enterprise_user)
 
     # def test_initial_s3_bucket_is_empty(self):
     #     s3_objects = ImageModelTest.s3_client.list_objects_v2(
@@ -29,18 +57,26 @@ class ImageModelTest(TestCase):
 
     def test_image_can_be_uploaded_to_s3_bucket(self):
         # Need authentication for posting to this endpoint.
-        # with open('images/tests/files/png_image.png', 'rb') as test_image:
-        #     response = self.client.post(
-        #         reverse("images:api-root")+"images/", {"image": test_image}
+        # with open("images/tests/files/png_image.png", "rb") as test_image:
+        #     # SPRÓBUJ TO ZAKOMENTOWAĆ \/
+        #     self.client.force_login(self.enterprise_user)
+        #     # response1 = self.client.post(
+        #     #     reverse("images:api-root")+"images/", {"image": test_image}
+        #     # )
+        #     response2 = self.client.post(
+        #         reverse("images:api-root") + "images/",
+        #         {"name": "test_image", "image": test_image},
+        #         **self.bearer_token,
         #     )
+        # print("\n\nresponse2:", response2.data)
 
-        ImageModelTest.s3_client.upload_file(
+        self.s3_client.upload_file(
             "images/tests/files/png_image.png",
             settings.AWS_STORAGE_BUCKET_NAME,
             "images/test_image.png",
             ExtraArgs={"ContentType": "image/png"},
         )
-        s3_objects = ImageModelTest.s3_client.list_objects_v2(
+        s3_objects = self.s3_client.list_objects_v2(
             Bucket=settings.AWS_STORAGE_BUCKET_NAME
         )
         self.assertEqual("Contents" in s3_objects, True)

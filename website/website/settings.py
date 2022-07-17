@@ -73,6 +73,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "dj_rest_auth.jwt_auth.JWTCookieAuthentication",
@@ -242,7 +243,9 @@ AWS_THUMBNAILS_STORAGE_BUCKET_NAME = os.environ.get(
     "AWS_THUMBNAILS_STORAGE_BUCKET_NAME"
 )
 DEFAULT_FILE_STORAGE = os.environ.get("DEFAULT_FILE_STORAGE")
-LOCALSTACK_ENDPOINT_URL = os.environ.get("LOCALSTACK_ENDPOINT_URL")
+LOCALSTACK_ENDPOINT_URL = os.environ.get(
+    "LOCALSTACK_ENDPOINT_URL", "http://localhost:4566"
+)
 AWS_S3_FILE_OVERWRITE = True
 
 

@@ -26,7 +26,7 @@ ADMIN_LOGIN_URL = os.environ.get("ADMIN_LOGIN_URL", "/hidden_admin_url")
 
 urlpatterns = [
     path(f"{ADMIN_LOGIN_URL}/", admin.site.urls),
-    path("auth/", include("dj_rest_auth.urls")),
+    path("auth/", include("dj_rest_auth.urls"), name="auth"),
     path("images/", include("images.urls")),
     path("users/", include("users.urls"), name="users"),
     path("", RedirectView.as_view(url="images/home", permanent=False), name="index"),
