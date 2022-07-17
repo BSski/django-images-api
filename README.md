@@ -160,6 +160,7 @@ Due to the time limitation, there are very important things left to add:
 - [in progress] Localstack to test and run app locally,
 - [in progress] tests,
 - typehints,
+- global AWS clients instead of temporary ones,
 - the code would also benefit from some cleaning,
 - logging.
 
