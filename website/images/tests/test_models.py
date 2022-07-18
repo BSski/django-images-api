@@ -54,24 +54,24 @@ class ImageModelTest(TestCase):
     #     self.assertEqual("Contents" in s3_objects, False)
 
     def test_image_can_be_uploaded_to_s3_bucket(self):
-        factory = APIRequestFactory()
-        with open("images/tests/files/png_image.png", "rb") as test_image:
-            url = reverse("images:api-root") + "images/"
-            request = factory.post(
-                url,
-                {"name": "test_image", "image": test_image},
-                **self.bearer_token,
-            )
-            view = resolve(url).func
-            response = view(request)
-            response.render()
+        # factory = APIRequestFactory()
+        # with open("images/tests/files/png_image.png", "rb") as test_image:
+        #     url = reverse("images:api-root") + "images/"
+        #     request = factory.post(
+        #         url,
+        #         {"name": "test_image", "image": test_image},
+        #         **self.bearer_token,
+        #     )
+        #     view = resolve(url).func
+        #     response = view(request)
+        #     response.render()
 
-        # ImageModelTest.s3_client.upload_file(
-        #     "images/tests/files/png_image.png",
-        #     settings.AWS_STORAGE_BUCKET_NAME,
-        #     "images/test_image.png",
-        #     ExtraArgs={"ContentType": "image/png"},
-        # )
+        ImageModelTest.s3_client.upload_file(
+            "images/tests/files/png_image.png",
+            settings.AWS_STORAGE_BUCKET_NAME,
+            "images/test_image.png",
+            ExtraArgs={"ContentType": "image/png"},
+        )
 
         s3_objects = ImageModelTest.s3_client.list_objects_v2(
             Bucket=settings.AWS_STORAGE_BUCKET_NAME
