@@ -1,11 +1,8 @@
-import os
-
 import boto3
 
 from django.test import TestCase
 from django.urls import reverse, resolve
 
-from images.models import Image
 from users.models import User, UserTier
 
 from website import settings
@@ -15,12 +12,6 @@ from rest_framework.test import APIRequestFactory
 
 
 class ImageModelTest(TestCase):
-    @property
-    def bearer_token(self):
-        user = self.enterprise_user
-        refresh = RefreshToken.for_user(user)
-        return {"HTTP_AUTHORIZATION": f"Bearer {refresh.access_token}"}
-
     @classmethod
     def setUpTestData(cls):
         cls.enterprise_user_tier = UserTier.objects.create(
@@ -47,8 +38,14 @@ class ImageModelTest(TestCase):
         )
         cls.s3_client.create_bucket(Bucket=settings.AWS_STORAGE_BUCKET_NAME)
 
-    def setUp(self):
-        self.client.force_login(self.enterprise_user)
+    # def setUp(self):
+    #     self.client.force_login(self.enterprise_user)
+
+    @property
+    def bearer_token(self):
+        user = self.enterprise_user
+        refresh = RefreshToken.for_user(user)
+        return {"HTTP_AUTHORIZATION": f"Bearer {refresh.access_token}"}
 
     # def test_initial_s3_bucket_is_empty(self):
     #     s3_objects = ImageModelTest.s3_client.list_objects_v2(
@@ -68,8 +65,6 @@ class ImageModelTest(TestCase):
             view = resolve(url).func
             response = view(request)
             response.render()
-
-        print("\n\n\nresponse:", response)
 
         # ImageModelTest.s3_client.upload_file(
         #     "images/tests/files/png_image.png",

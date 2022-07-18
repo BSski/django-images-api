@@ -1,5 +1,5 @@
 ﻿<p align="center">
-  <h2 align="center">DjangoImagesAPI</h2>
+  <h2 align="center">DjangoImagesAPI [work in progress]</h2>
 </p>
 
 
@@ -136,6 +136,7 @@ ADMIN_LOGIN_URL=test_admin_login_url
 DJANGO_SUPERUSER_PASSWORD=TestAdminPassword
 DJANGO_SUPERUSER_USERNAME=TestAdminName
 DJANGO_SUPERUSER_EMAIL=TestAdmin@email.com
+LOCALSTACK_ENDPOINT_URL=http://localhost:4566
 ```
 
 
