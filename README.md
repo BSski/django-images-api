@@ -21,7 +21,9 @@
 
 <p align="center">
   [Heroku retracted its free tier, therefore all my demos are unavailable until further notice.]
-  
+</p>
+
+<p align="center">
   https://django-images-api-bsski.herokuapp.com/
 </p>
 
