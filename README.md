@@ -20,6 +20,10 @@
 </h3>
 
 <p align="center">
+  <b>[Heroku retracted its free tier, therefore all my demos are unavailable until further notice.]</b>
+</p>
+
+<p align="center">
   https://django-images-api-bsski.herokuapp.com/
 </p>
 
@@ -158,8 +162,8 @@ Furthermore, the website is deployed on Heroku from a Docker image using a CI/CD
 ## :arrow_up: Room for improvement
 
 Due to the time limitation, there are very important things left to add:
-- Localstack to test and run app locally,
-- tests,
+- [in progress] Localstack to test and run app locally,
+- [in progress] tests,
 - typehints,
 - global AWS clients instead of temporary ones,
 - the code would also benefit from some cleaning,
