@@ -20,7 +20,7 @@
 </h3>
 
 <p align="center">
-  [**Heroku retracted its free tier, therefore all my demos are unavailable until further notice.**]
+  <b>[Heroku retracted its free tier, therefore all my demos are unavailable until further notice.]</b>
 </p>
 
 <p align="center">
