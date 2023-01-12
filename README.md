@@ -7,13 +7,12 @@
 
 
 [![Build Status](https://bsski.semaphoreci.com/badges/DjangoImagesAPI/branches/main.svg?style=shields&key=0adba4be-b67c-416d-802b-90f43f19ff0f)](https://bsski.semaphoreci.com/projects/DjangoImagesAPI)
-<!-- [![Demo Uptime](https://img.shields.io/uptimerobot/ratio/7/m792086829-c54e14cd8cfdacdfdfa92920)](https://django-images-api-bsski.herokuapp.com/) -->
-<!-- [![Heroku](https://pyheroku-badge.herokuapp.com/?app=django-images-api-bsski&style=flat)](https://django-images-api-bsski.herokuapp.com/) -->
 [![Maintainability](https://api.codeclimate.com/v1/badges/a84055e6e49ddb02653e/maintainability)](https://codeclimate.com/github/BSski/DjangoImagesAPI/maintainability)
-[![CodeFactor](https://www.codefactor.io/repository/github/bsski/djangoimagesapi/badge)](https://www.codefactor.io/repository/github/bsski/djangoimagesapi)
+[![CodeFactor](https://www.codefactor.io/repository/github/bsski/django-images-api/badge)](https://www.codefactor.io/repository/github/bsski/django-images-api)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 </div>
-
+<!-- [![Demo Uptime](https://img.shields.io/uptimerobot/ratio/7/m792086829-c54e14cd8cfdacdfdfa92920)](https://django-images-api-bsski.herokuapp.com/) -->
+<!-- [![Heroku](https://pyheroku-badge.herokuapp.com/?app=django-images-api-bsski&style=flat)](https://django-images-api-bsski.herokuapp.com/) -->
 
 <h3 align="center">
   :fireworks: Live demo :fireworks:
