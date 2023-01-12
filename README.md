@@ -1,5 +1,5 @@
 ﻿<p align="center">
-  <h2 align="center">DjangoImagesAPI</h2>
+  <h2 align="center">Django Images API</h2>
 </p>
 
 
