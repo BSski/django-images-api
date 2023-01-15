@@ -161,8 +161,8 @@ Furthermore, the website is deployed on Heroku from a Docker image using a CI/CD
 ## :arrow_up: Room for improvement
 
 Due to the time limitation, there are very important things left to add:
-- [in progress] Localstack to test and run app locally,
-- [in progress] tests,
+- Localstack to test and run app locally,
+- tests,
 - typehints,
 - global AWS clients instead of temporary ones,
 - the code would also benefit from some cleaning,
