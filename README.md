@@ -72,7 +72,7 @@ The project:
 - HyperlinkedRelatedField for user's info in images list view was added,
 - the code has docstrings,
 - and it's easily deployable via docker (you need your own AWS architecture),
-- there is a CI/CD pipeline which would run tests if I wrote them, it runs black linter check, dockerizes the project and deploys it to Heroku from the Docker container,
+- there is a CI/CD pipeline which runs tests, black linter check, dockerizes the project and deploys it to Heroku from the Docker container,
 - there are authentication and authorization mechanisms: user's JWT token is saved as cookie, but it can also be passed in requests as a bearer token.
 
 
