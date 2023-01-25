@@ -22,6 +22,7 @@
   <b>[Heroku retracted its free tier, therefore all my demos are unavailable until further notice.]</b>
 </p>
 
+<!--
 <p align="center">
   https://django-images-api-bsski.herokuapp.com/
 </p>
@@ -34,7 +35,7 @@ Read-only admin and test users credentials are available upon request.
 Login page URL:<br>
 https://django-images-api-bsski.herokuapp.com/auth/login
 </p>
-
+-->
 
 
 ## Table of contents
